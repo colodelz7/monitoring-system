@@ -47,10 +47,11 @@ function getTransporter() {
   });
 }
 
-async function sendAlertEmail(type, alerts) {
+async function sendAlertEmail(type, alerts, city = '') {
+  const key  = city ? `${type}:${city}` : type;
   const now  = Date.now();
-  const last = emailLastSent.get(type) || 0;
-  if (now - last < EMAIL_DEBOUNCE_MS) return; // debounce
+  const last = emailLastSent.get(key) || 0;
+  if (now - last < EMAIL_DEBOUNCE_MS) return; // debounce por cidade+tipo
 
   const transporter = getTransporter();
   if (!transporter) return; // e-mail não configurado, ignora silenciosamente
@@ -72,8 +73,8 @@ async function sendAlertEmail(type, alerts) {
       text:    `MONITORING SYSTEM — Alertas Críticos\n\n${linhas}\n\nHorário: ${new Date().toLocaleString('pt-BR')}`,
       html:    `<h2 style="color:#ff2d55">⚠ Alerta Crítico — MONITORING SYSTEM</h2><ul>${html}</ul><p style="color:#888">Horário: ${new Date().toLocaleString('pt-BR')}</p>`,
     });
-    emailLastSent.set(type, now);
-    console.log(`[EMAIL] Alerta "${type}" enviado para ${to}`);
+    emailLastSent.set(key, now);
+    console.log(`[EMAIL] Alerta "${type}" (${city || 'global'}) enviado para ${to}`);
   } catch (e) {
     console.warn(`[EMAIL] Falha ao enviar alerta "${type}":`, e.message);
   }
@@ -248,10 +249,11 @@ app.get('/api/data', async (req, res) => {
   const alerts = buildAlerts(weather, forecast, seismic, tMin, tMax, mag);
 
   // 6. Dispara e-mails de alerta em background (não bloqueia a resposta)
-  const tempDangers    = alerts.filter(a => a.type === 'danger' && a.sensor === 'clima');
-  const seismicDangers = alerts.filter(a => a.type === 'danger' && a.sensor === 'sismo');
-  if (tempDangers.length)    sendAlertEmail('temp_danger',    tempDangers);
-  if (seismicDangers.length) sendAlertEmail('seismic_danger', seismicDangers);
+  //    Envia para QUALQUER alerta (warning e danger), de clima e sismo.
+  const climaAlerts = alerts.filter(a => a.sensor === 'clima');
+  const sismoAlerts = alerts.filter(a => a.sensor === 'sismo');
+  if (climaAlerts.length) sendAlertEmail('clima', climaAlerts, city);
+  if (sismoAlerts.length) sendAlertEmail('sismo', sismoAlerts, city);
 
   const offset   = TIMEZONES[city] ?? -3;
   const cityTime = new Date(Date.now() + offset * 3600000);
