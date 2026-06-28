@@ -645,7 +645,7 @@ function drawLeafletMap(data) {
 
     glMap = new maplibregl.Map({
       container: 'leafletMap',
-      style: `https://tiles.stadiamaps.com/styles/alidade_smooth_dark.json?api_key=fcbadd82-73b9-414d-bda3-4a75aabcc621`,
+      style: `API`,
       center: [0, 20],
       zoom: 1.5,
       projection: 'globe',
