@@ -13,15 +13,26 @@ const PLOTLY_BASE = {
 };
 
 const AXIS = {
+<<<<<<< HEAD
   showgrid:  true,
   gridcolor: 'rgba(0,229,255,0.06)',
   zeroline:  false,
   tickfont:  { color: 'rgba(255,255,255,0.3)', size: 10 },
+=======
+  showgrid: true,
+  gridcolor: 'rgba(0,229,255,0.06)',
+  zeroline: false,
+  tickfont: { color: 'rgba(255,255,255,0.3)', size: 10 },
+>>>>>>> bb02ef8f089c0c632d0c31dc24f4728372accf49
   linecolor: 'rgba(255,255,255,0.06)',
 };
 
 // ═══════════════════════════════════════════════════════════
+<<<<<<< HEAD
 //  ESTADO & PERSISTÊNCIA
+=======
+//  ESTADO & PERSISTÊNCIA (localStorage)
+>>>>>>> bb02ef8f089c0c632d0c31dc24f4728372accf49
 // ═══════════════════════════════════════════════════════════
 const DEFAULT_STATE = {
   city:         'Curitiba',
@@ -41,7 +52,11 @@ function loadState() {
 
 function saveState() {
   const state = {
+<<<<<<< HEAD
     city:         document.getElementById('cityInput').value,
+=======
+    city:         document.getElementById('citySelect').value,
+>>>>>>> bb02ef8f089c0c632d0c31dc24f4728372accf49
     period:       document.getElementById('periodSelect').value,
     refreshSecs:  parseInt(document.getElementById('refreshSlider').value),
     tempMin:      parseInt(document.getElementById('tempMinSlider').value),
@@ -52,13 +67,18 @@ function saveState() {
 }
 
 function applyState(state) {
+<<<<<<< HEAD
   document.getElementById('cityInput').value     = state.city;
+=======
+  document.getElementById('citySelect').value    = state.city;
+>>>>>>> bb02ef8f089c0c632d0c31dc24f4728372accf49
   document.getElementById('periodSelect').value  = state.period;
   document.getElementById('refreshSlider').value = state.refreshSecs;
   document.getElementById('tempMinSlider').value = state.tempMin;
   document.getElementById('tempMaxSlider').value = state.tempMax;
   document.getElementById('magSlider').value     = state.magThreshold;
 
+<<<<<<< HEAD
   document.getElementById('refreshVal').textContent  = state.refreshSecs;
   document.getElementById('tempMinVal').textContent  = state.tempMin;
   document.getElementById('tempMaxVal').textContent  = state.tempMax;
@@ -213,6 +233,13 @@ function renderWorldClock() {
       <span class="wc-date">${date}</span>
     </div>`;
   }).join('');
+=======
+  document.getElementById('refreshVal').textContent = state.refreshSecs;
+  document.getElementById('tempMinVal').textContent = state.tempMin;
+  document.getElementById('tempMaxVal').textContent = state.tempMax;
+  document.getElementById('magVal').textContent     = 'M ' + parseFloat(state.magThreshold).toFixed(1);
+  document.getElementById('topRefresh')             && (document.getElementById('topRefresh').textContent = state.refreshSecs + 's');
+>>>>>>> bb02ef8f089c0c632d0c31dc24f4728372accf49
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -230,6 +257,7 @@ function initParticles() {
 
   function makeParticle() {
     return {
+<<<<<<< HEAD
       x:  Math.random() * W,
       y:  Math.random() * H,
       r:  Math.random() * 1.2 + 0.3,
@@ -237,6 +265,15 @@ function initParticles() {
       vy: (Math.random() - .5) * .3,
       a:  Math.random(),
       va: (Math.random() - .5) * .005,
+=======
+      x:   Math.random() * W,
+      y:   Math.random() * H,
+      r:   Math.random() * 1.2 + 0.3,
+      vx:  (Math.random() - .5) * .3,
+      vy:  (Math.random() - .5) * .3,
+      a:   Math.random(),
+      va:  (Math.random() - .5) * .005,
+>>>>>>> bb02ef8f089c0c632d0c31dc24f4728372accf49
     };
   }
 
@@ -248,16 +285,30 @@ function initParticles() {
   function draw() {
     ctx.clearRect(0, 0, W, H);
     particles.forEach(p => {
+<<<<<<< HEAD
       p.x += p.vx; p.y += p.vy;
       p.a += p.va;
       if (p.a > 1 || p.a < 0) p.va *= -1;
       if (p.x < 0 || p.x > W) p.vx *= -1;
       if (p.y < 0 || p.y > H) p.vy *= -1;
+=======
+      p.x  += p.vx; p.y += p.vy;
+      p.a  += p.va;
+      if (p.a > 1 || p.a < 0) p.va *= -1;
+      if (p.x < 0 || p.x > W) p.vx *= -1;
+      if (p.y < 0 || p.y > H) p.vy *= -1;
+
+>>>>>>> bb02ef8f089c0c632d0c31dc24f4728372accf49
       ctx.beginPath();
       ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
       ctx.fillStyle = `rgba(0,229,255,${p.a * 0.4})`;
       ctx.fill();
     });
+<<<<<<< HEAD
+=======
+
+    // linhas entre partículas próximas
+>>>>>>> bb02ef8f089c0c632d0c31dc24f4728372accf49
     for (let i = 0; i < particles.length; i++) {
       for (let j = i + 1; j < particles.length; j++) {
         const dx   = particles[i].x - particles[j].x;
@@ -276,10 +327,14 @@ function initParticles() {
     requestAnimationFrame(draw);
   }
 
+<<<<<<< HEAD
   window.addEventListener('resize', () => {
     resize();
     particles.forEach(p => { p.x = Math.min(p.x, W); p.y = Math.min(p.y, H); });
   });
+=======
+  window.addEventListener('resize', () => { resize(); particles.forEach(p => { p.x = Math.min(p.x, W); p.y = Math.min(p.y, H); }); });
+>>>>>>> bb02ef8f089c0c632d0c31dc24f4728372accf49
   init();
   draw();
 }
@@ -295,20 +350,33 @@ function switchTab(id) {
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
   document.getElementById(`tab-${id}`).classList.add('active');
   document.querySelector(`[data-tab="${id}"]`).classList.add('active');
+<<<<<<< HEAD
 
   if (lastData) {
     if (id === 'dashboard') { drawForecast(lastData); drawRain(lastData); drawConditions(lastData); }
     if (id === 'seismic')   drawLeafletMap(lastData);
   }
   if (id === 'history') loadHistory();
+=======
+  if (lastData) {
+    if (id === 'dashboard') { drawForecast(lastData); drawConditions(lastData); }
+    if (id === 'seismic')   drawMap(lastData);
+  }
+>>>>>>> bb02ef8f089c0c632d0c31dc24f4728372accf49
 }
 
 // ═══════════════════════════════════════════════════════════
 //  COUNTDOWN TIMER
 // ═══════════════════════════════════════════════════════════
+<<<<<<< HEAD
 let refreshTimer   = null;
 let countdownTimer = null;
 let countdownVal   = 30;
+=======
+let refreshTimer    = null;
+let countdownTimer  = null;
+let countdownVal    = 30;
+>>>>>>> bb02ef8f089c0c632d0c31dc24f4728372accf49
 
 function startCountdown(secs) {
   clearInterval(countdownTimer);
@@ -330,7 +398,11 @@ function resetTimer() {
 }
 
 // ═══════════════════════════════════════════════════════════
+<<<<<<< HEAD
 //  FETCH PRINCIPAL
+=======
+//  FETCH
+>>>>>>> bb02ef8f089c0c632d0c31dc24f4728372accf49
 // ═══════════════════════════════════════════════════════════
 let lastData = null;
 
@@ -338,10 +410,15 @@ async function fetchData() {
   const btn = document.getElementById('refreshBtn');
   btn.classList.add('spinning');
 
+<<<<<<< HEAD
   const city = currentCity || document.getElementById('cityInput').value || 'Curitiba';
 
   const params = new URLSearchParams({
     city,
+=======
+  const params = new URLSearchParams({
+    city:         document.getElementById('citySelect').value,
+>>>>>>> bb02ef8f089c0c632d0c31dc24f4728372accf49
     period:       document.getElementById('periodSelect').value,
     tempMin:      document.getElementById('tempMinSlider').value,
     tempMax:      document.getElementById('tempMaxSlider').value,
@@ -353,6 +430,10 @@ async function fetchData() {
     const data = await res.json();
     lastData   = data;
     saveState();
+<<<<<<< HEAD
+=======
+    // 5. Persiste os últimos dados recebidos para restaurar no F5
+>>>>>>> bb02ef8f089c0c632d0c31dc24f4728372accf49
     try { localStorage.setItem(CACHE_KEY, JSON.stringify(data)); } catch {}
     render(data);
   } catch (e) {
@@ -360,6 +441,10 @@ async function fetchData() {
     setStatus('danger', 'SEM CONEXÃO');
   } finally {
     btn.classList.remove('spinning');
+<<<<<<< HEAD
+=======
+    // reinicia countdown
+>>>>>>> bb02ef8f089c0c632d0c31dc24f4728372accf49
     startCountdown(parseInt(document.getElementById('refreshSlider').value));
   }
 }
@@ -368,11 +453,16 @@ async function fetchData() {
 //  RENDER PRINCIPAL
 // ═══════════════════════════════════════════════════════════
 function render(data) {
+<<<<<<< HEAD
   const { weather, forecast, seismic, aqi, alerts, cityTime, isMock, isCached, cacheAge } = data;
+=======
+  const { weather, forecast, seismic, alerts, cityTime, isMock } = data;
+>>>>>>> bb02ef8f089c0c632d0c31dc24f4728372accf49
   const tMin = parseFloat(document.getElementById('tempMinSlider').value);
   const tMax = parseFloat(document.getElementById('tempMaxSlider').value);
   const mag  = parseFloat(document.getElementById('magSlider').value);
 
+<<<<<<< HEAD
   renderTopbar(alerts, cityTime, isMock, isCached, cacheAge);
   renderCards(weather, seismic, aqi, alerts, tMin, tMax, mag);
   renderAlerts(alerts);
@@ -382,6 +472,14 @@ function render(data) {
 
   if (activeTab === 'dashboard') { drawForecast(data); drawRain(data); drawConditions(data); }
   if (activeTab === 'seismic')   drawLeafletMap(data);
+=======
+  renderTopbar(alerts, cityTime, isMock);
+  renderCards(weather, seismic, alerts, tMin, tMax, mag);
+  renderAlerts(alerts);
+
+  if (activeTab === 'dashboard') { drawForecast(data); drawConditions(data); }
+  if (activeTab === 'seismic')   drawMap(data);
+>>>>>>> bb02ef8f089c0c632d0c31dc24f4728372accf49
 }
 
 // ─── Topbar ────────────────────────────────────────────────
@@ -392,6 +490,7 @@ function setStatus(type, text) {
   txt.textContent = text;
 }
 
+<<<<<<< HEAD
 function renderTopbar(alerts, cityTime, isMock, isCached, cacheAge) {
   const hasDanger = alerts.some(a => a.type === 'danger');
   const count     = alerts.length;
@@ -413,6 +512,20 @@ function renderTopbar(alerts, cityTime, isMock, isCached, cacheAge) {
 
   document.getElementById('topCity').textContent = document.getElementById('cityInput').value || currentCity;
   document.getElementById('topTime').textContent = cityTime;
+=======
+function renderTopbar(alerts, cityTime, isMock) {
+  const hasDanger = alerts.some(a => a.type === 'danger');
+  const count     = alerts.length;
+
+  if (hasDanger)   setStatus('danger',  'ALERTA CRÍTICO');
+  else if (count)  setStatus('warning', 'ALERTAS ATIVOS');
+  else             setStatus('safe',    'SISTEMA SEGURO');
+
+  document.getElementById('modeBadge').style.display = !isMock ? '' : 'none';
+  document.getElementById('demoBadge').style.display = isMock  ? '' : 'none';
+  document.getElementById('topCity').textContent     = document.getElementById('citySelect').value;
+  document.getElementById('topTime').textContent     = cityTime;
+>>>>>>> bb02ef8f089c0c632d0c31dc24f4728372accf49
 
   const nav = document.getElementById('navBadge');
   if (count > 0) { nav.style.display = ''; nav.textContent = count; }
@@ -420,16 +533,43 @@ function renderTopbar(alerts, cityTime, isMock, isCached, cacheAge) {
 }
 
 // ─── Cards ─────────────────────────────────────────────────
+<<<<<<< HEAD
 function renderCards(weather, seismic, aqi, alerts, tMin, tMax, mag) {
   // Temperatura
   if (weather.success) {
     const t     = weather.temp;
     const color = t >= tMax ? 'var(--red)' : t <= tMin ? 'var(--blue2)' : 'var(--cyan)';
     document.getElementById('metricTemp').innerHTML     = `<span style="color:${color}">${t}°C</span>`;
+=======
+function animateNumber(el, target, suffix = '') {
+  const start   = parseFloat(el.dataset.prev ?? 0);
+  const end     = parseFloat(target);
+  const dur     = 600;
+  const startTs = performance.now();
+  el.dataset.prev = target;
+  function step(now) {
+    const p = Math.min((now - startTs) / dur, 1);
+    const ease = 1 - Math.pow(1 - p, 3);
+    const val  = (start + (end - start) * ease).toFixed(target % 1 ? 1 : 0);
+    el.textContent = val + suffix;
+    if (p < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+function renderCards(weather, seismic, alerts, tMin, tMax, mag) {
+  // Temp
+  if (weather.success) {
+    const t     = weather.temp;
+    const color = t >= tMax ? 'var(--red)' : t <= tMin ? 'var(--blue2)' : 'var(--cyan)';
+    const el    = document.getElementById('metricTemp');
+    el.innerHTML = `<span style="color:${color}" data-prev="${el.querySelector('span')?.dataset.prev ?? 0}">${t}°C</span>`;
+>>>>>>> bb02ef8f089c0c632d0c31dc24f4728372accf49
     document.getElementById('metricTempDesc').textContent = `↓ ${weather.temp_min}°C  ·  ↑ ${weather.temp_max}°C  ·  ${weather.description}`;
     document.getElementById('cardTemp').style.setProperty('--card-accent-color', color);
   }
 
+<<<<<<< HEAD
   // Umidade
   if (weather.success) {
     const windDir = degToCompass(weather.wind_deg || 0);
@@ -452,6 +592,15 @@ function renderCards(weather, seismic, aqi, alerts, tMin, tMax, mag) {
   }
 
   // Sísmico
+=======
+  // Humidity
+  if (weather.success) {
+    document.getElementById('metricHumidity').innerHTML  = `${weather.humidity}<span style="font-size:.95rem;color:var(--w20)">%</span>`;
+    document.getElementById('metricHumidityDesc').textContent = `💨 ${weather.wind_speed} m/s  ·  🔵 ${weather.pressure} hPa`;
+  }
+
+  // Seismic
+>>>>>>> bb02ef8f089c0c632d0c31dc24f4728372accf49
   const events = seismic.events || [];
   const total  = events.length;
   if (total > 0) {
@@ -468,7 +617,11 @@ function renderCards(weather, seismic, aqi, alerts, tMin, tMax, mag) {
     document.getElementById('seismicCount').textContent      = '0 eventos';
   }
 
+<<<<<<< HEAD
   // Alertas
+=======
+  // Alerts
+>>>>>>> bb02ef8f089c0c632d0c31dc24f4728372accf49
   const count  = alerts.length;
   const danger = alerts.some(a => a.type === 'danger');
   const color  = danger ? 'var(--red)' : count > 0 ? 'var(--orange)' : 'var(--green)';
@@ -479,11 +632,14 @@ function renderCards(weather, seismic, aqi, alerts, tMin, tMax, mag) {
   document.getElementById('alertsCountLabel').textContent = `${count} alerta${count !== 1 ? 's' : ''} ativo${count !== 1 ? 's' : ''}`;
 }
 
+<<<<<<< HEAD
 function degToCompass(deg) {
   const dirs = ['N','NE','L','SE','S','SO','O','NO'];
   return dirs[Math.round(deg / 45) % 8];
 }
 
+=======
+>>>>>>> bb02ef8f089c0c632d0c31dc24f4728372accf49
 // ═══════════════════════════════════════════════════════════
 //  GRÁFICOS
 // ═══════════════════════════════════════════════════════════
@@ -504,7 +660,11 @@ function drawForecast(data) {
     hovertemplate: '<b>%{x|%d/%m %H:%M}</b><br>%{y:.1f}°C<extra></extra>',
   }], {
     ...PLOTLY_BASE,
+<<<<<<< HEAD
     height: 220,
+=======
+    height: 260,
+>>>>>>> bb02ef8f089c0c632d0c31dc24f4728372accf49
     xaxis: { ...AXIS, tickformat: '%d/%m\n%H:%M' },
     yaxis: { ...AXIS, ticksuffix: '°' },
     showlegend: false,
@@ -513,6 +673,7 @@ function drawForecast(data) {
   }, { responsive: true, displayModeBar: false });
 }
 
+<<<<<<< HEAD
 // Feature 3 — gráfico de precipitação
 function drawRain(data) {
   const pts = data.forecast?.points;
@@ -543,6 +704,8 @@ function drawRain(data) {
   }, { responsive: true, displayModeBar: false });
 }
 
+=======
+>>>>>>> bb02ef8f089c0c632d0c31dc24f4728372accf49
 function drawConditions(data) {
   const w = data.weather;
   if (!w?.success) return;
@@ -564,7 +727,11 @@ function drawConditions(data) {
     hovertemplate: '<b>%{theta}</b>: %{r:.0f}%<extra></extra>',
   }], {
     ...PLOTLY_BASE,
+<<<<<<< HEAD
     height: 220,
+=======
+    height: 260,
+>>>>>>> bb02ef8f089c0c632d0c31dc24f4728372accf49
     margin: { l: 40, r: 40, t: 20, b: 20 },
     polar: {
       bgcolor: 'rgba(0,0,0,0)',
@@ -575,6 +742,7 @@ function drawConditions(data) {
   }, { responsive: true, displayModeBar: false });
 }
 
+<<<<<<< HEAD
 // ═══════════════════════════════════════════════════════════
 //  FEATURE 8 — MAPA LEAFLET INTERATIVO
 // ═══════════════════════════════════════════════════════════
@@ -617,10 +785,24 @@ function drawLeafletMap(data) {
   leafletMarkers.clearLayers();
 
   // Limita a 200 eventos de maior magnitude
+=======
+function drawMap(data) {
+  const allEvents = data.seismic?.events || [];
+  const mag       = parseFloat(document.getElementById('magSlider').value);
+
+  if (!allEvents.length) {
+    document.getElementById('chartMap').innerHTML =
+      '<div style="display:flex;align-items:center;justify-content:center;height:300px;color:rgba(255,255,255,.2);font-size:.8rem;">Nenhum evento sísmico no período.</div>';
+    return;
+  }
+
+  // 7. Limita a 200 eventos de maior magnitude para não travar a UI
+>>>>>>> bb02ef8f089c0c632d0c31dc24f4728372accf49
   const events = [...allEvents]
     .sort((a, b) => b.magnitude - a.magnitude)
     .slice(0, 200);
 
+<<<<<<< HEAD
   events.forEach(e => {
     const color  = e.magnitude >= 6 ? '#ff2d55' : e.magnitude >= mag ? '#ff8c00' : '#7c3aed';
     const radius = Math.max(e.magnitude * 3, 4);
@@ -649,6 +831,37 @@ function drawLeafletMap(data) {
 
   // Força resize do mapa (necessário quando a aba estava inativa)
   setTimeout(() => leafletMap.invalidateSize(), 100);
+=======
+  // 7. Envolve em rAF para não bloquear a thread principal
+  requestAnimationFrame(() => {
+  Plotly.react('chartMap', [{
+    type: 'scattergeo',
+    lat:  events.map(e => e.latitude),
+    lon:  events.map(e => e.longitude),
+    text: events.map(e => `<b>${e.place}</b><br>M${e.magnitude.toFixed(1)} · Prof: ${e.depth}km<br>${new Date(e.time).toLocaleString('pt-BR')}`),
+    hoverinfo: 'text',
+    marker: {
+      size:    events.map(e => Math.max(e.magnitude * 3.5, 5)),
+      color:   events.map(e => e.magnitude >= 6 ? '#ff2d55' : e.magnitude >= mag ? '#ff8c00' : '#7c3aed'),
+      opacity: 0.85,
+      line: { width: .5, color: '#010812' },
+    },
+  }], {
+    ...PLOTLY_BASE,
+    height: null,
+    margin: { l: 0, r: 0, t: 0, b: 0 },
+    geo: {
+      showland: true,       landcolor:       '#0d1f38',
+      showocean: true,      oceancolor:      '#050f1e',
+      showcoastlines: true, coastlinecolor:  'rgba(0,229,255,.18)',
+      showcountries: true,  countrycolor:    'rgba(255,255,255,.06)',
+      bgcolor: 'rgba(0,0,0,0)',
+      projection: { type: 'natural earth' },
+    },
+    hoverlabel: { bgcolor: '#0d1f38', bordercolor: '#00e5ff', font: { color: '#fff', size: 11 } },
+  }, { responsive: true, displayModeBar: false });
+  }); // fim requestAnimationFrame
+>>>>>>> bb02ef8f089c0c632d0c31dc24f4728372accf49
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -681,6 +894,7 @@ function renderAlerts(alerts) {
 }
 
 // ═══════════════════════════════════════════════════════════
+<<<<<<< HEAD
 //  FEATURE 5 — HISTÓRICO DE ALERTAS
 // ═══════════════════════════════════════════════════════════
 async function loadHistory() {
@@ -756,6 +970,8 @@ async function doCompare() {
 }
 
 // ═══════════════════════════════════════════════════════════
+=======
+>>>>>>> bb02ef8f089c0c632d0c31dc24f4728372accf49
 //  LOADING OVERLAY
 // ═══════════════════════════════════════════════════════════
 const LOADING_MSGS = [
@@ -786,6 +1002,7 @@ function runLoadingSequence(cb) {
 //  INIT
 // ═══════════════════════════════════════════════════════════
 document.addEventListener('DOMContentLoaded', () => {
+<<<<<<< HEAD
   initParticles();
   initCitySearch();
   initNotifications();
@@ -803,19 +1020,49 @@ document.addEventListener('DOMContentLoaded', () => {
   ].forEach(({ id, display, fmt }) => {
     document.getElementById(id).addEventListener('input', e => {
       document.getElementById(display).textContent = fmt(e.target.value);
+=======
+  // Partículas
+  initParticles();
+
+  // Restaura estado salvo
+  const state = loadState();
+  applyState(state);
+
+  // Sliders de limite → só atualizam display, NÃO disparam fetch
+  const limitSliders = [
+    { id: 'tempMinSlider', display: 'tempMinVal', fmt: v => v },
+    { id: 'tempMaxSlider', display: 'tempMaxVal', fmt: v => v },
+    { id: 'magSlider',     display: 'magVal',     fmt: v => 'M ' + parseFloat(v).toFixed(1) },
+  ];
+  limitSliders.forEach(({ id, display, fmt }) => {
+    document.getElementById(id).addEventListener('input', e => {
+      document.getElementById(display).textContent = fmt(e.target.value);
+      // Marca botão como pendente
+>>>>>>> bb02ef8f089c0c632d0c31dc24f4728372accf49
       const btn = document.getElementById('saveLimitsBtn');
       btn.classList.add('pending');
       btn.textContent = '💾 Salvar Limites *';
     });
   });
 
+<<<<<<< HEAD
   document.getElementById('refreshSlider').addEventListener('input', e => {
     document.getElementById('refreshVal').textContent      = e.target.value;
     document.getElementById('topCountdown').textContent    = e.target.value + 's';
+=======
+  // Slider de refresh → atualiza display e reinicia timer imediatamente
+  document.getElementById('refreshSlider').addEventListener('input', e => {
+    document.getElementById('refreshVal').textContent = e.target.value;
+    document.getElementById('topCountdown').textContent = e.target.value + 's';
+>>>>>>> bb02ef8f089c0c632d0c31dc24f4728372accf49
     saveState();
     resetTimer();
   });
 
+<<<<<<< HEAD
+=======
+  // Botão Salvar Limites → aplica, salva e refaz fetch
+>>>>>>> bb02ef8f089c0c632d0c31dc24f4728372accf49
   document.getElementById('saveLimitsBtn').addEventListener('click', () => {
     const btn = document.getElementById('saveLimitsBtn');
     btn.classList.remove('pending');
@@ -825,18 +1072,35 @@ document.addEventListener('DOMContentLoaded', () => {
     fetchData();
   });
 
+<<<<<<< HEAD
   document.getElementById('periodSelect').addEventListener('change', () => { saveState(); fetchData(); });
 
   document.getElementById('refreshBtn').addEventListener('click', fetchData);
 
+=======
+  // Selects
+  ['citySelect', 'periodSelect'].forEach(id =>
+    document.getElementById(id).addEventListener('change', () => { saveState(); fetchData(); })
+  );
+
+  // Refresh manual
+  document.getElementById('refreshBtn').addEventListener('click', fetchData);
+
+  // Tabs
+>>>>>>> bb02ef8f089c0c632d0c31dc24f4728372accf49
   document.querySelectorAll('.nav-btn').forEach(btn =>
     btn.addEventListener('click', () => switchTab(btn.dataset.tab))
   );
 
+<<<<<<< HEAD
+=======
+  // Menu mobile
+>>>>>>> bb02ef8f089c0c632d0c31dc24f4728372accf49
   document.getElementById('menuBtn').addEventListener('click', () =>
     document.getElementById('sidebar').classList.toggle('open')
   );
 
+<<<<<<< HEAD
   // Feature 4: comparativo
   document.getElementById('compareBtn').addEventListener('click', doCompare);
 
@@ -850,14 +1114,25 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Restaura cache
+=======
+  // 5. Restaura cache da última requisição para evitar tela em branco no F5
+>>>>>>> bb02ef8f089c0c632d0c31dc24f4728372accf49
   try {
     const cached = localStorage.getItem(CACHE_KEY);
     if (cached) {
       lastData = JSON.parse(cached);
+<<<<<<< HEAD
       render(lastData);
     }
   } catch {}
 
+=======
+      render(lastData); // renderiza imediatamente com dados antigos
+    }
+  } catch {}
+
+  // Loading → fetch (atualiza em background) → timer
+>>>>>>> bb02ef8f089c0c632d0c31dc24f4728372accf49
   runLoadingSequence(() => {
     fetchData();
     resetTimer();

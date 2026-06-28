@@ -24,11 +24,16 @@ const app  = express();
 const PORT = 3001;
 
 // ═══════════════════════════════════════════════════════════
+<<<<<<< HEAD
 //  API KEY
+=======
+//  API KEY INTEGRADA
+>>>>>>> bb02ef8f089c0c632d0c31dc24f4728372accf49
 // ═══════════════════════════════════════════════════════════
 const OWM_KEY = '4800d0c64893b98a932d0dfb387292b0';
 
 // ═══════════════════════════════════════════════════════════
+<<<<<<< HEAD
 //  CACHE OFFLINE (feature 7)
 //  Guarda o último resultado bem-sucedido de /api/data em memória.
 //  Se a OWM estiver fora, o endpoint devolve esses dados com flag isCached.
@@ -66,6 +71,12 @@ function appendAlertLog(alerts, city) {
 // ═══════════════════════════════════════════════════════════
 const EMAIL_DEBOUNCE_MS = 10 * 60 * 1000;
 const emailLastSent     = new Map();
+=======
+//  NODEMAILER — ALERTAS POR E-MAIL
+// ═══════════════════════════════════════════════════════════
+const EMAIL_DEBOUNCE_MS = 10 * 60 * 1000; // 10 minutos
+const emailLastSent     = new Map();       // tipo → timestamp
+>>>>>>> bb02ef8f089c0c632d0c31dc24f4728372accf49
 
 function getTransporter() {
   const host = process.env.EMAIL_SMTP_HOST;
@@ -84,10 +95,17 @@ async function sendAlertEmail(type, alerts, city = '') {
   const key  = city ? `${type}:${city}` : type;
   const now  = Date.now();
   const last = emailLastSent.get(key) || 0;
+<<<<<<< HEAD
   if (now - last < EMAIL_DEBOUNCE_MS) return;
 
   const transporter = getTransporter();
   if (!transporter) return;
+=======
+  if (now - last < EMAIL_DEBOUNCE_MS) return; // debounce por cidade+tipo
+
+  const transporter = getTransporter();
+  if (!transporter) return; // e-mail não configurado, ignora silenciosamente
+>>>>>>> bb02ef8f089c0c632d0c31dc24f4728372accf49
 
   const from = process.env.EMAIL_FROM;
   const to   = process.env.EMAIL_TO;
@@ -100,7 +118,12 @@ async function sendAlertEmail(type, alerts, city = '') {
 
   try {
     await transporter.sendMail({
+<<<<<<< HEAD
       from, to,
+=======
+      from,
+      to,
+>>>>>>> bb02ef8f089c0c632d0c31dc24f4728372accf49
       subject: `⚠ Alerta Crítico — MONITORING SYSTEM`,
       text:    `MONITORING SYSTEM — Alertas Críticos\n\n${linhas}\n\nHorário: ${new Date().toLocaleString('pt-BR')}`,
       html:    `<h2 style="color:#ff2d55">⚠ Alerta Crítico — MONITORING SYSTEM</h2><ul>${html}</ul><p style="color:#888">Horário: ${new Date().toLocaleString('pt-BR')}</p>`,
@@ -116,11 +139,16 @@ app.use(cors());
 app.use(express.json());
 
 // ═══════════════════════════════════════════════════════════
+<<<<<<< HEAD
 //  CONFIGURAÇÃO DE TIMEZONES
+=======
+//  CONFIGURAÇÃO
+>>>>>>> bb02ef8f089c0c632d0c31dc24f4728372accf49
 // ═══════════════════════════════════════════════════════════
 const TIMEZONES = {
   'Curitiba': -3, 'São Paulo': -3, 'Rio de Janeiro': -3,
   'Brasília': -3, 'Manaus': -4, 'Tóquio': 9,
+<<<<<<< HEAD
   'Nova York': -5, 'Londres': 1,
 };
 
@@ -147,6 +175,25 @@ const MOCK_WEATHER = {
   'Londres':        { temp: 15.0, temp_min: 11.0, temp_max: 18.0, humidity: 82,  wind_speed: 4.8, wind_deg: 240, pressure: 1010, description: 'Chuvoso'              },
 };
 
+=======
+  'Nova York': -5, 'Londres': 1
+};
+
+const MOCK_WEATHER = {
+  'Curitiba':       { temp: 18.2, temp_min: 14.0, temp_max: 22.5, humidity: 78,  wind_speed: 3.5, pressure: 1018, description: 'Nublado'             },
+  'São Paulo':      { temp: 24.5, temp_min: 20.0, temp_max: 28.0, humidity: 65,  wind_speed: 2.8, pressure: 1012, description: 'Parcialmente nublado' },
+  'Rio de Janeiro': { temp: 30.1, temp_min: 25.0, temp_max: 34.0, humidity: 80,  wind_speed: 4.2, pressure: 1008, description: 'Ensolarado'           },
+  'Brasília':       { temp: 27.3, temp_min: 22.0, temp_max: 31.0, humidity: 55,  wind_speed: 3.0, pressure: 1014, description: 'Céu claro'            },
+  'Manaus':         { temp: 33.0, temp_min: 28.0, temp_max: 36.5, humidity: 85,  wind_speed: 1.5, pressure: 1005, description: 'Chuva leve'           },
+  'Tóquio':         { temp: 22.0, temp_min: 17.0, temp_max: 25.0, humidity: 60,  wind_speed: 5.1, pressure: 1020, description: 'Limpo'                },
+  'Nova York':      { temp: 19.5, temp_min: 15.0, temp_max: 23.0, humidity: 70,  wind_speed: 6.3, pressure: 1016, description: 'Nublado'              },
+  'Londres':        { temp: 15.0, temp_min: 11.0, temp_max: 18.0, humidity: 82,  wind_speed: 4.8, pressure: 1010, description: 'Chuvoso'              },
+};
+
+// ═══════════════════════════════════════════════════════════
+//  MOCK FALLBACK
+// ═══════════════════════════════════════════════════════════
+>>>>>>> bb02ef8f089c0c632d0c31dc24f4728372accf49
 function getMockWeather(city) {
   return { success: true, mock: true, city, ...(MOCK_WEATHER[city] || MOCK_WEATHER['Curitiba']) };
 }
@@ -159,7 +206,10 @@ function getMockForecast(city) {
     points: Array.from({ length: 16 }, (_, i) => ({
       datetime: new Date(now + i * 3 * 3600 * 1000).toISOString(),
       temp:     parseFloat((base.temp + Math.sin(i * 0.7) * 3.5 + (Math.random() * 2 - 1)).toFixed(1)),
+<<<<<<< HEAD
       rain:     parseFloat((Math.random() * (i % 4 === 0 ? 3 : 0.5)).toFixed(2)),
+=======
+>>>>>>> bb02ef8f089c0c632d0c31dc24f4728372accf49
     })),
   };
 }
@@ -169,8 +219,13 @@ function getMockForecast(city) {
 // ═══════════════════════════════════════════════════════════
 async function getRealWeather(city) {
   try {
+<<<<<<< HEAD
     const res = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&appid=${OWM_KEY}&units=metric&lang=pt_br`);
     const d   = await res.json();
+=======
+    const res  = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&appid=${OWM_KEY}&units=metric&lang=pt_br`);
+    const d    = await res.json();
+>>>>>>> bb02ef8f089c0c632d0c31dc24f4728372accf49
     if (d.cod !== 200) throw new Error(d.message);
     return {
       success: true, mock: false, city,
@@ -179,12 +234,18 @@ async function getRealWeather(city) {
       temp_max:    parseFloat(d.main.temp_max.toFixed(1)),
       humidity:    d.main.humidity,
       wind_speed:  d.wind.speed,
+<<<<<<< HEAD
       wind_deg:    d.wind.deg || 0,
       pressure:    d.main.pressure,
       description: d.weather[0].description,
       icon:        d.weather[0].icon,
       lat:         d.coord.lat,
       lon:         d.coord.lon,
+=======
+      pressure:    d.main.pressure,
+      description: d.weather[0].description,
+      icon:        d.weather[0].icon,
+>>>>>>> bb02ef8f089c0c632d0c31dc24f4728372accf49
     };
   } catch (e) {
     console.warn(`[OWM] Weather fallback para ${city}:`, e.message);
@@ -194,15 +255,23 @@ async function getRealWeather(city) {
 
 async function getRealForecast(city) {
   try {
+<<<<<<< HEAD
     const res = await fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${encodeURIComponent(city)}&appid=${OWM_KEY}&units=metric&lang=pt_br`);
     const d   = await res.json();
+=======
+    const res  = await fetch(`https://api.openweathermap.org/data/2.5/forecast?q=${encodeURIComponent(city)}&appid=${OWM_KEY}&units=metric&lang=pt_br`);
+    const d    = await res.json();
+>>>>>>> bb02ef8f089c0c632d0c31dc24f4728372accf49
     if (d.cod !== '200') throw new Error(d.message);
     return {
       success: true, mock: false,
       points: d.list.slice(0, 16).map(item => ({
         datetime: new Date(item.dt * 1000).toISOString(),
         temp:     parseFloat(item.main.temp.toFixed(1)),
+<<<<<<< HEAD
         rain:     parseFloat((item.rain?.['3h'] || 0).toFixed(2)),
+=======
+>>>>>>> bb02ef8f089c0c632d0c31dc24f4728372accf49
       })),
     };
   } catch (e) {
@@ -212,6 +281,7 @@ async function getRealForecast(city) {
 }
 
 // ═══════════════════════════════════════════════════════════
+<<<<<<< HEAD
 //  QUALIDADE DO AR — AQI (feature 2)
 // ═══════════════════════════════════════════════════════════
 async function getAQI(lat, lon) {
@@ -235,6 +305,8 @@ async function getAQI(lat, lon) {
 }
 
 // ═══════════════════════════════════════════════════════════
+=======
+>>>>>>> bb02ef8f089c0c632d0c31dc24f4728372accf49
 //  USGS — DADOS SÍSMICOS
 // ═══════════════════════════════════════════════════════════
 async function getSeismicData(period) {
@@ -302,6 +374,7 @@ function buildAlerts(weather, forecast, seismic, tMin, tMax, mag) {
 // ═══════════════════════════════════════════════════════════
 //  ROTAS
 // ═══════════════════════════════════════════════════════════
+<<<<<<< HEAD
 
 // ─── /api/geocode — busca livre de cidades (feature 1) ───
 app.get('/api/geocode', async (req, res) => {
@@ -365,6 +438,25 @@ app.get('/api/data', async (req, res) => {
   if (alerts.length) appendAlertLog(alerts, city);
 
   // E-mails
+=======
+app.get('/api/data', async (req, res) => {
+  const city         = req.query.city         || 'Curitiba';
+  const period       = req.query.period       || 'day';
+  const tMin         = parseFloat(req.query.tempMin      ?? 10);
+  const tMax         = parseFloat(req.query.tempMax      ?? 35);
+  const mag          = parseFloat(req.query.magThreshold ?? 5.0);
+
+  const [weather, forecast, seismic] = await Promise.all([
+    getRealWeather(city),
+    getRealForecast(city),
+    getSeismicData(period),
+  ]);
+
+  const alerts = buildAlerts(weather, forecast, seismic, tMin, tMax, mag);
+
+  // 6. Dispara e-mails de alerta em background (não bloqueia a resposta)
+  //    Envia para QUALQUER alerta (warning e danger), de clima e sismo.
+>>>>>>> bb02ef8f089c0c632d0c31dc24f4728372accf49
   const climaAlerts = alerts.filter(a => a.sensor === 'clima');
   const sismoAlerts = alerts.filter(a => a.sensor === 'sismo');
   if (climaAlerts.length) sendAlertEmail('clima', climaAlerts, city);
@@ -373,6 +465,7 @@ app.get('/api/data', async (req, res) => {
   const offset   = TIMEZONES[city] ?? -3;
   const cityTime = new Date(Date.now() + offset * 3600000);
 
+<<<<<<< HEAD
   const payload = {
     weather,
     forecast,
@@ -448,9 +541,22 @@ app.get('/api/cache-status', (req, res) => {
     hasCached: true,
     ageSeconds: Math.floor((Date.now() - offlineCache.ts) / 1000),
     city: offlineCache.data?.weather?.city,
+=======
+  res.json({
+    weather,
+    forecast,
+    seismic,
+    alerts,
+    cityTime: cityTime.toTimeString().slice(0, 8),
+    isMock:   weather.mock,
+>>>>>>> bb02ef8f089c0c632d0c31dc24f4728372accf49
   });
 });
 
 app.get('/api/health', (_req, res) => res.json({ status: 'ok', ts: new Date().toISOString() }));
 
+<<<<<<< HEAD
 app.listen(PORT, () => console.log(`\n🌍  Backend rodando em http://localhost:${PORT}\n`));
+=======
+app.listen(PORT, () => console.log(`\n🌍  Backend rodando em http://localhost:${PORT}\n`));
+>>>>>>> bb02ef8f089c0c632d0c31dc24f4728372accf49

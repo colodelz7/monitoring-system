@@ -1,7 +1,10 @@
 # 🌍 Monitoramento Ambiental Real-Time
 
 Dashboard de monitoramento climático e sísmico em tempo real.
+<<<<<<< HEAD
 **Projeto Integrador — Universidade Tuiuti do Paraná, 2026**
+=======
+>>>>>>> bb02ef8f089c0c632d0c31dc24f4728372accf49
 
 ---
 
@@ -25,6 +28,7 @@ monitoramento/
 
 ---
 
+<<<<<<< HEAD
 ## 🚀 Passo a Passo para Rodar
 
 ### Pré-requisitos
@@ -37,6 +41,8 @@ monitoramento/
 
 Abra o terminal, entre na pasta `backend` e instale:
 
+=======
+>>>>>>> bb02ef8f089c0c632d0c31dc24f4728372accf49
 ```bash
 cd backend
 npm install
@@ -52,6 +58,7 @@ Ainda dentro da pasta `backend`:
 npm start
 ```
 
+<<<<<<< HEAD
 Você verá a mensagem:
 ```
 🌍  Backend rodando em http://localhost:3001
@@ -77,10 +84,15 @@ Instale o servidor estático global (só precisa fazer uma vez):
 npm install -g serve
 ```
 
+=======
+### 3️⃣ Abrir o Frontend
+
+>>>>>>> bb02ef8f089c0c632d0c31dc24f4728372accf49
 Depois, na pasta `frontend/`:
 ```bash
 cd ../frontend
 serve .
+<<<<<<< HEAD
 ```
 
 Acesse: **http://localhost:3000**
@@ -120,3 +132,6 @@ Para ativar dados climáticos reais (em vez do modo demo):
 - Gabriel da Freiria
 
 **Orientador:** Prof. Luiz Altamir Correa Junior
+=======
+```
+>>>>>>> bb02ef8f089c0c632d0c31dc24f4728372accf49
