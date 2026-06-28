@@ -7,7 +7,11 @@
   <link rel="stylesheet" href="style.css"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <!-- Plotly -->
   <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+  <!-- Leaflet (feature 8) -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="index.js" defer></script>
 </head>
 <body>
@@ -41,27 +45,28 @@
     <button class="nav-btn" data-tab="seismic">
       <span class="nav-icon">◉</span> Mapa Sísmico
     </button>
+    <button class="nav-btn" data-tab="compare">
+      <span class="nav-icon">⊞</span> Comparar
+    </button>
     <button class="nav-btn" data-tab="alerts">
       <span class="nav-icon">◆</span> Alertas
       <span class="nav-badge" id="navBadge" style="display:none">0</span>
+    </button>
+    <button class="nav-btn" data-tab="history">
+      <span class="nav-icon">◎</span> Histórico
     </button>
   </nav>
 
   <div class="sidebar-section">
     <div class="section-label">⚙ Configurações</div>
 
+    <!-- Feature 1: busca livre com autocomplete -->
     <div class="field">
       <label class="field-label">Cidade</label>
-      <select id="citySelect" class="input-select">
-        <option>Curitiba</option>
-        <option>São Paulo</option>
-        <option>Rio de Janeiro</option>
-        <option>Brasília</option>
-        <option>Manaus</option>
-        <option>Tóquio</option>
-        <option>Nova York</option>
-        <option>Londres</option>
-      </select>
+      <div class="city-search-wrap" id="citySearchWrap">
+        <input type="text" id="cityInput" class="input-select city-input" placeholder="Pesquisar cidade..." autocomplete="off"/>
+        <div class="city-dropdown" id="cityDropdown"></div>
+      </div>
     </div>
 
     <div class="field">
@@ -97,13 +102,23 @@
     </div>
 
     <button class="save-limits-btn" id="saveLimitsBtn">💾 Salvar Limites</button>
+  </div>
 
+  <!-- Feature 6: notificações nativas -->
+  <div class="sidebar-section">
+    <div class="section-label">🔔 Notificações</div>
+    <button class="save-limits-btn" id="notifBtn" style="background:rgba(124,58,237,0.15);border-color:rgba(124,58,237,0.3);color:#a78bfa;">
+      Ativar Push Alerts
+    </button>
   </div>
 
 </aside>
 
 <!-- ══════ MAIN ══════ -->
 <div class="main-wrapper">
+
+  <!-- Feature 9: widget hora mundial -->
+  <div class="world-clock-bar" id="worldClockBar"></div>
 
   <header class="topbar">
     <button class="menu-btn" id="menuBtn">☰</button>
@@ -115,6 +130,8 @@
       </div>
       <span id="modeBadge" class="badge-live" style="display:none">● LIVE</span>
       <span id="demoBadge" class="badge-demo" style="display:none">⚠ DEMO</span>
+      <!-- Feature 7: badge de cache offline -->
+      <span id="cacheBadge" class="badge-cache" style="display:none">📦 CACHE</span>
     </div>
 
     <div class="topbar-right">
@@ -163,6 +180,18 @@
           <div class="card-glow"></div>
         </div>
 
+        <!-- Feature 2: card AQI -->
+        <div class="card card--aqi" id="cardAQI">
+          <div class="card-accent"></div>
+          <div class="card-icon">🌿</div>
+          <div class="card-body">
+            <div class="card-label">Qualidade do Ar</div>
+            <div class="card-value" id="metricAQI"><span class="spinner"></span></div>
+            <div class="card-desc"  id="metricAQIDesc">—</div>
+          </div>
+          <div class="card-glow"></div>
+        </div>
+
         <div class="card card--ind" id="cardSeismic">
           <div class="card-accent"></div>
           <div class="card-icon">🌐</div>
@@ -198,6 +227,18 @@
           <div id="chartForecast" class="chart-area"></div>
         </div>
 
+        <!-- Feature 3: gráfico de precipitação -->
+        <div class="chart-card">
+          <div class="chart-header">
+            <div class="chart-title">
+              <span class="chart-dot dot-blue"></span>
+              Precipitação Prevista — 48h
+            </div>
+            <div class="chart-badge" id="rainBadge">—</div>
+          </div>
+          <div id="chartRain" class="chart-area"></div>
+        </div>
+
         <div class="chart-card">
           <div class="chart-header">
             <div class="chart-title">
@@ -210,17 +251,42 @@
       </div>
     </section>
 
-    <!-- TAB SÍSMICO -->
+    <!-- TAB SÍSMICO (feature 8: Leaflet) -->
     <section class="tab-panel" id="tab-seismic">
       <div class="chart-card full-height">
         <div class="chart-header">
           <div class="chart-title">
             <span class="chart-dot dot-ind"></span>
-            Atividade Sísmica Global
+            Atividade Sísmica Global — Mapa Interativo
           </div>
           <div class="chart-badge" id="seismicCount">—</div>
         </div>
-        <div id="chartMap" class="chart-area chart-area--tall"></div>
+        <div id="leafletMap" class="chart-area chart-area--tall leaflet-container-wrap"></div>
+      </div>
+    </section>
+
+    <!-- TAB COMPARAR (feature 4) -->
+    <section class="tab-panel" id="tab-compare">
+      <div class="compare-controls">
+        <div class="compare-inputs">
+          <div class="compare-city-wrap">
+            <label class="field-label">Cidade A</label>
+            <input type="text" id="compareCity1" class="input-select" placeholder="Ex: São Paulo" value="São Paulo"/>
+          </div>
+          <div class="compare-vs">VS</div>
+          <div class="compare-city-wrap">
+            <label class="field-label">Cidade B</label>
+            <input type="text" id="compareCity2" class="input-select" placeholder="Ex: Tóquio" value="Tóquio"/>
+          </div>
+          <button class="save-limits-btn" id="compareBtn" style="margin-top:18px;">⊞ Comparar</button>
+        </div>
+      </div>
+      <div id="compareResult" class="compare-result">
+        <div class="empty-state">
+          <div class="empty-icon">⊞</div>
+          <div class="empty-text">Selecione duas cidades para comparar</div>
+          <div class="empty-sub">Dados de clima em tempo real lado a lado</div>
+        </div>
       </div>
     </section>
 
@@ -235,6 +301,21 @@
           <div class="empty-icon">✅</div>
           <div class="empty-text">Nenhum alerta ativo</div>
           <div class="empty-sub">Sistema operando normalmente</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB HISTÓRICO (feature 5) -->
+    <section class="tab-panel" id="tab-history">
+      <div class="alerts-header">
+        <h2 class="alerts-title">Histórico de Alertas</h2>
+        <button class="save-limits-btn" id="clearHistoryBtn" style="font-size:.7rem;padding:4px 12px;">🗑 Limpar</button>
+      </div>
+      <div id="historyList" class="alerts-list">
+        <div class="empty-state">
+          <div class="empty-icon">📋</div>
+          <div class="empty-text">Nenhum alerta registrado ainda</div>
+          <div class="empty-sub">O histórico é salvo automaticamente no servidor</div>
         </div>
       </div>
     </section>
