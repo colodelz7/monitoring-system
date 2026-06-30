@@ -21,12 +21,13 @@ try {
 } catch (e) { console.warn('[ENV] Falha ao carregar .env:', e.message); }
 
 const app  = express();
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 
 // ═══════════════════════════════════════════════════════════
-//  API KEY
+//  API KEYS — lidas do .env
 // ═══════════════════════════════════════════════════════════
-const OWM_KEY = '';
+const OWM_KEY    = process.env.OWM_KEY    || '';
+const STADIA_KEY = process.env.STADIA_KEY || '';
 
 // ═══════════════════════════════════════════════════════════
 //  CACHE OFFLINE (feature 7)
@@ -520,5 +521,10 @@ app.get('/api/cache-status', (req, res) => {
 });
 
 app.get('/api/health', (_req, res) => res.json({ status: 'ok', ts: new Date().toISOString() }));
+
+// ─── /api/config — entrega chaves públicas ao frontend (nunca expõe no código JS)
+app.get('/api/config', (_req, res) => {
+  res.json({ stadiaKey: STADIA_KEY });
+});
 
 app.listen(PORT, () => console.log(`\n🌍  Backend rodando em http://localhost:${PORT}\n`));
