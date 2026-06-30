@@ -262,12 +262,18 @@
         <div class="compare-inputs">
           <div class="compare-city-wrap">
             <label class="field-label">Cidade A</label>
-            <input type="text" id="compareCity1" class="input-select" placeholder="Ex: São Paulo" value="São Paulo"/>
+            <div class="city-search-wrap" id="compareWrap1">
+              <input type="text" id="compareCity1" class="input-select city-input" placeholder="Ex: São Paulo" value="São Paulo" autocomplete="off"/>
+              <div class="city-dropdown" id="compareDropdown1"></div>
+            </div>
           </div>
           <div class="compare-vs">VS</div>
           <div class="compare-city-wrap">
             <label class="field-label">Cidade B</label>
-            <input type="text" id="compareCity2" class="input-select" placeholder="Ex: Tóquio" value="Tóquio"/>
+            <div class="city-search-wrap" id="compareWrap2">
+              <input type="text" id="compareCity2" class="input-select city-input" placeholder="Ex: Tóquio" value="Tóquio" autocomplete="off"/>
+              <div class="city-dropdown" id="compareDropdown2"></div>
+            </div>
           </div>
           <button class="save-limits-btn" id="compareBtn" style="margin-top:18px;">⊞ Comparar</button>
         </div>
