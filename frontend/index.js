@@ -5,6 +5,9 @@ const API_BASE    = 'http://localhost:3001';
 const STORAGE_KEY = 'monitoringsystem_state';
 const CACHE_KEY   = 'monitoringsystem_cache';
 
+// Stadia key carregada do backend (não fica exposta no JS)
+let STADIA_KEY = '';
+
 const PLOTLY_BASE = {
   paper_bgcolor: 'rgba(0,0,0,0)',
   plot_bgcolor:  'rgba(0,0,0,0)',
@@ -645,7 +648,7 @@ function drawLeafletMap(data) {
 
     glMap = new maplibregl.Map({
       container: 'leafletMap',
-      style: `API`,
+      style: `https://tiles.stadiamaps.com/styles/alidade_smooth_dark.json?api_key=${STADIA_KEY}`,
       center: [0, 20],
       zoom: 1.5,
       projection: 'globe',
@@ -770,12 +773,23 @@ function updateGeoJSON(events, mag) {
 function updateSeismicBadges(events, mag) {
   const critical = events.filter(e => e.magnitude >= 6).length;
   const alert    = events.filter(e => e.magnitude >= mag && e.magnitude < 6).length;
-  const mild     = events.filter(e => e.magnitude < mag).length;
+  const mild     = events.length - critical - alert;  // todos os demais = leves
 
   const seismicCountEl = document.getElementById('seismicCount');
   if (seismicCountEl) seismicCountEl.textContent = `${events.length} eventos`;
 
-  const counterEl = document.getElementById('mapCounter');
+  // Cria o counter se ainda não existir
+  let counterEl = document.getElementById('mapCounter');
+  if (!counterEl) {
+    const mapEl = document.getElementById('leafletMap');
+    if (mapEl) {
+      counterEl = document.createElement('div');
+      counterEl.className   = 'map-counter';
+      counterEl.id          = 'mapCounter';
+      counterEl.style.cssText = 'position:absolute;top:10px;left:10px;z-index:10;pointer-events:none;';
+      mapEl.appendChild(counterEl);
+    }
+  }
   if (counterEl) counterEl.innerHTML = `
     <div class="map-counter-title">◉ EVENTOS: ${events.length}</div>
     <div class="map-counter-row" style="color:#ff2d55">⬤ Fortes: ${critical}</div>
@@ -785,23 +799,31 @@ function updateSeismicBadges(events, mag) {
 }
 
 function renderMapOverlays(mag) {
-  // Counter (canto superior esquerdo)
-  const counterWrap = document.createElement('div');
-  counterWrap.className = 'map-counter';
-  counterWrap.id = 'mapCounter';
-  document.getElementById('leafletMap').appendChild(counterWrap);
+  const mapEl = document.getElementById('leafletMap');
 
-  // Legenda (canto superior direito)
-  const legendWrap = document.createElement('div');
-  legendWrap.className = 'map-legend';
-  legendWrap.style.cssText = 'position:absolute;top:10px;right:10px;z-index:10;';
-  legendWrap.innerHTML = `
+  // Evita duplicar
+  if (!document.getElementById('mapCounter')) {
+    const ctr = document.createElement('div');
+    ctr.className   = 'map-counter';
+    ctr.id          = 'mapCounter';
+    ctr.style.cssText = 'position:absolute;top:10px;left:10px;z-index:10;pointer-events:none;';
+    mapEl.appendChild(ctr);
+  }
+  if (!document.getElementById('mapLegend')) {
+    const leg = document.createElement('div');
+    leg.className   = 'map-legend';
+    leg.id          = 'mapLegend';
+    leg.style.cssText = 'position:absolute;top:10px;right:10px;z-index:10;pointer-events:none;';
+    mapEl.appendChild(leg);
+  }
+  document.getElementById('mapLegend').innerHTML = `
     <div class="map-legend-title">⚡ MAGNITUDE</div>
     <div class="map-legend-row"><span class="map-legend-dot" style="background:#ff2d55;box-shadow:0 0 8px #ff2d55"></span>M ≥ 6.0 — Forte</div>
-    <div class="map-legend-row"><span class="map-legend-dot" style="background:#ff8c00;box-shadow:0 0 8px #ff8c00"></span>M ≥ ${mag.toFixed(1)} — Alerta</div>
+    <div class="map-legend-row"><span class="map-legend-dot" style="background:#ff8c00;box-shadow:0 0 8px #ff8c00"></span>${mag.toFixed(1)} ≤ M &lt; 6.0 — Alerta</div>
     <div class="map-legend-row"><span class="map-legend-dot" style="background:#7c3aed;box-shadow:0 0 6px #7c3aed"></span>M &lt; ${mag.toFixed(1)} — Leve</div>
   `;
-  document.getElementById('leafletMap').appendChild(legendWrap);
+  // Popula o counter com os dados já carregados
+  updateSeismicBadges(lastSeismicEvents, mag);
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -869,11 +891,75 @@ async function loadHistory() {
 }
 
 // ═══════════════════════════════════════════════════════════
-//  FEATURE 4 — COMPARATIVO DE CIDADES
+//  AUTOCOMPLETE — CAMPOS DE COMPARAR
 // ═══════════════════════════════════════════════════════════
+function initCompareSearch() {
+  initCompareField('compareCity1', 'compareDropdown1', 'compareWrap1');
+  initCompareField('compareCity2', 'compareDropdown2', 'compareWrap2');
+}
+
+function initCompareField(inputId, dropdownId, wrapId) {
+  const input    = document.getElementById(inputId);
+  const dropdown = document.getElementById(dropdownId);
+  if (!input || !dropdown) return;
+
+  let timer = null;
+
+  input.addEventListener('input', () => {
+    clearTimeout(timer);
+    const q = input.value.trim();
+    if (q.length < 2) { dropdown.style.display = 'none'; return; }
+    timer = setTimeout(async () => {
+      dropdown.innerHTML = '<div class="city-option" style="color:var(--w20);pointer-events:none">🔍 Buscando...</div>';
+      dropdown.style.display = 'block';
+      try {
+        const res     = await fetch(`${API_BASE}/api/geocode?q=${encodeURIComponent(q)}`);
+        const results = await res.json();
+        if (!results.length) {
+          dropdown.innerHTML = '<div class="city-option" style="color:var(--w20);pointer-events:none">Nenhuma cidade encontrada</div>';
+          return;
+        }
+        dropdown.innerHTML = results.map((r, i) => {
+          const norm  = normalizeText(r.label);
+          const qNorm = normalizeText(q);
+          const idx   = norm.indexOf(qNorm);
+          let display = r.label;
+          if (idx !== -1) {
+            display = r.label.slice(0, idx)
+              + `<b style="color:var(--cyan)">${r.label.slice(idx, idx + q.length)}</b>`
+              + r.label.slice(idx + q.length);
+          }
+          return `<div class="city-option" data-name="${r.name}" data-label="${r.label}">${display}</div>`;
+        }).join('');
+
+        dropdown.querySelectorAll('.city-option').forEach(el => {
+          el.addEventListener('click', () => {
+            input.value = el.dataset.label;
+            dropdown.style.display = 'none';
+          });
+        });
+      } catch { dropdown.innerHTML = '<div class="city-option" style="color:var(--w20);pointer-events:none">Sem conexão</div>'; }
+    }, 400);
+  });
+
+  input.addEventListener('keydown', e => {
+    if (e.key === 'Escape') { dropdown.style.display = 'none'; }
+    if (e.key === 'Enter') {
+      const first = dropdown.querySelector('.city-option');
+      if (first) first.click();
+    }
+  });
+
+  document.addEventListener('click', e => {
+    if (!e.target.closest(`#${wrapId}`)) dropdown.style.display = 'none';
+  });
+}
 async function doCompare() {
-  const c1  = document.getElementById('compareCity1').value.trim();
-  const c2  = document.getElementById('compareCity2').value.trim();
+  const c1raw = document.getElementById('compareCity1').value.trim();
+  const c2raw = document.getElementById('compareCity2').value.trim();
+  // Pega só o nome antes da vírgula (ex: "Curitiba, Paraná, BR" → "Curitiba")
+  const c1 = c1raw.split(',')[0].trim();
+  const c2 = c2raw.split(',')[0].trim();
   const box = document.getElementById('compareResult');
   if (!c1 || !c2) {
     box.innerHTML = `<div class="empty-state"><div class="empty-icon">⚠</div><div class="empty-text">Preencha as duas cidades</div></div>`;
@@ -982,9 +1068,16 @@ function runLoadingSequence(cb) {
 // ═══════════════════════════════════════════════════════════
 //  INIT
 // ═══════════════════════════════════════════════════════════
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+  // Carrega config do backend (API keys protegidas)
+  try {
+    const cfg = await fetch(`${API_BASE}/api/config`).then(r => r.json());
+    STADIA_KEY = cfg.stadiaKey || '';
+  } catch { console.warn('[CONFIG] Backend offline — keys não carregadas'); }
+
   initParticles();
   initCitySearch();
+  initCompareSearch();
   initNotifications();
   initWorldClock();
 
