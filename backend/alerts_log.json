@@ -1,0 +1,509 @@
+[
+  {
+    "type": "danger",
+    "sensor": "sismo",
+    "timestamp": "28/06/2026, 16:52:58",
+    "message": "Sismo M7.5 detectado: 28 km SE of Yumare, Venezuela.",
+    "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000t7zp",
+    "city": "Paris",
+    "loggedAt": "2026-06-28T19:52:58.173Z"
+  },
+  {
+    "type": "danger",
+    "sensor": "sismo",
+    "timestamp": "28/06/2026, 16:52:58",
+    "message": "Sismo M7.2 detectado: 23 km SE of Yumare, Venezuela.",
+    "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000t7zc",
+    "city": "Paris",
+    "loggedAt": "2026-06-28T19:52:58.173Z"
+  },
+  {
+    "type": "danger",
+    "sensor": "sismo",
+    "timestamp": "28/06/2026, 16:52:59",
+    "message": "Sismo M7.5 detectado: 28 km SE of Yumare, Venezuela.",
+    "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000t7zp",
+    "city": "Rio Branco do Sul",
+    "loggedAt": "2026-06-28T19:52:59.628Z"
+  },
+  {
+    "type": "danger",
+    "sensor": "sismo",
+    "timestamp": "28/06/2026, 16:52:59",
+    "message": "Sismo M7.2 detectado: 23 km SE of Yumare, Venezuela.",
+    "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000t7zc",
+    "city": "Rio Branco do Sul",
+    "loggedAt": "2026-06-28T19:52:59.628Z"
+  },
+  {
+    "type": "danger",
+    "sensor": "sismo",
+    "timestamp": "28/06/2026, 16:53:12",
+    "message": "Sismo M7.5 detectado: 28 km SE of Yumare, Venezuela.",
+    "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000t7zp",
+    "city": "Colombo",
+    "loggedAt": "2026-06-28T19:53:12.603Z"
+  },
+  {
+    "type": "danger",
+    "sensor": "sismo",
+    "timestamp": "28/06/2026, 16:53:12",
+    "message": "Sismo M7.2 detectado: 23 km SE of Yumare, Venezuela.",
+    "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000t7zc",
+    "city": "Colombo",
+    "loggedAt": "2026-06-28T19:53:12.603Z"
+  },
+  {
+    "type": "danger",
+    "sensor": "sismo",
+    "timestamp": "28/06/2026, 16:53:34",
+    "message": "Sismo M7.5 detectado: 28 km SE of Yumare, Venezuela.",
+    "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000t7zp",
+    "city": "Berlim",
+    "loggedAt": "2026-06-28T19:53:34.878Z"
+  },
+  {
+    "type": "danger",
+    "sensor": "sismo",
+    "timestamp": "28/06/2026, 16:53:34",
+    "message": "Sismo M7.2 detectado: 23 km SE of Yumare, Venezuela.",
+    "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000t7zc",
+    "city": "Berlim",
+    "loggedAt": "2026-06-28T19:53:34.878Z"
+  },
+  {
+    "type": "danger",
+    "sensor": "sismo",
+    "timestamp": "28/06/2026, 16:54:08",
+    "message": "Sismo M7.5 detectado: 28 km SE of Yumare, Venezuela.",
+    "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000t7zp",
+    "city": "Berlim",
+    "loggedAt": "2026-06-28T19:54:08.216Z"
+  },
+  {
+    "type": "danger",
+    "sensor": "sismo",
+    "timestamp": "28/06/2026, 16:54:08",
+    "message": "Sismo M7.2 detectado: 23 km SE of Yumare, Venezuela.",
+    "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000t7zc",
+    "city": "Berlim",
+    "loggedAt": "2026-06-28T19:54:08.216Z"
+  },
+  {
+    "type": "danger",
+    "sensor": "sismo",
+    "timestamp": "28/06/2026, 21:34:06",
+    "message": "Sismo M7.5 detectado: 28 km SE of Yumare, Venezuela.",
+    "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000t7zp",
+    "city": "Berlim",
+    "loggedAt": "2026-06-29T00:34:06.980Z"
+  },
+  {
+    "type": "danger",
+    "sensor": "sismo",
+    "timestamp": "28/06/2026, 21:34:06",
+    "message": "Sismo M7.2 detectado: 23 km SE of Yumare, Venezuela.",
+    "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000t7zc",
+    "city": "Berlim",
+    "loggedAt": "2026-06-29T00:34:06.980Z"
+  },
+  {
+    "type": "danger",
+    "sensor": "sismo",
+    "timestamp": "28/06/2026, 21:34:29",
+    "message": "Sismo M7.5 detectado: 28 km SE of Yumare, Venezuela.",
+    "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000t7zp",
+    "city": "Berlim",
+    "loggedAt": "2026-06-29T00:34:29.049Z"
+  },
+  {
+    "type": "danger",
+    "sensor": "sismo",
+    "timestamp": "28/06/2026, 21:34:29",
+    "message": "Sismo M7.2 detectado: 23 km SE of Yumare, Venezuela.",
+    "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000t7zc",
+    "city": "Berlim",
+    "loggedAt": "2026-06-29T00:34:29.049Z"
+  },
+  {
+    "type": "danger",
+    "sensor": "sismo",
+    "timestamp": "28/06/2026, 21:42:26",
+    "message": "Sismo M7.5 detectado: 28 km SE of Yumare, Venezuela.",
+    "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000t7zp",
+    "city": "Berlim",
+    "loggedAt": "2026-06-29T00:42:26.849Z"
+  },
+  {
+    "type": "danger",
+    "sensor": "sismo",
+    "timestamp": "28/06/2026, 21:42:26",
+    "message": "Sismo M7.2 detectado: 23 km SE of Yumare, Venezuela.",
+    "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000t7zc",
+    "city": "Berlim",
+    "loggedAt": "2026-06-29T00:42:26.849Z"
+  },
+  {
+    "type": "danger",
+    "sensor": "sismo",
+    "timestamp": "28/06/2026, 21:42:38",
+    "message": "Sismo M7.5 detectado: 28 km SE of Yumare, Venezuela.",
+    "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000t7zp",
+    "city": "Berlim",
+    "loggedAt": "2026-06-29T00:42:38.933Z"
+  },
+  {
+    "type": "danger",
+    "sensor": "sismo",
+    "timestamp": "28/06/2026, 21:42:38",
+    "message": "Sismo M7.2 detectado: 23 km SE of Yumare, Venezuela.",
+    "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000t7zc",
+    "city": "Berlim",
+    "loggedAt": "2026-06-29T00:42:38.933Z"
+  },
+  {
+    "type": "danger",
+    "sensor": "sismo",
+    "timestamp": "28/06/2026, 21:42:54",
+    "message": "Sismo M7.5 detectado: 28 km SE of Yumare, Venezuela.",
+    "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000t7zp",
+    "city": "Berlim",
+    "loggedAt": "2026-06-29T00:42:54.077Z"
+  },
+  {
+    "type": "danger",
+    "sensor": "sismo",
+    "timestamp": "28/06/2026, 21:42:54",
+    "message": "Sismo M7.2 detectado: 23 km SE of Yumare, Venezuela.",
+    "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000t7zc",
+    "city": "Berlim",
+    "loggedAt": "2026-06-29T00:42:54.077Z"
+  },
+  {
+    "type": "danger",
+    "sensor": "sismo",
+    "timestamp": "28/06/2026, 21:43:37",
+    "message": "Sismo M7.5 detectado: 28 km SE of Yumare, Venezuela.",
+    "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000t7zp",
+    "city": "Berlim",
+    "loggedAt": "2026-06-29T00:43:37.119Z"
+  },
+  {
+    "type": "danger",
+    "sensor": "sismo",
+    "timestamp": "28/06/2026, 21:43:37",
+    "message": "Sismo M7.2 detectado: 23 km SE of Yumare, Venezuela.",
+    "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000t7zc",
+    "city": "Berlim",
+    "loggedAt": "2026-06-29T00:43:37.119Z"
+  },
+  {
+    "type": "danger",
+    "sensor": "sismo",
+    "timestamp": "28/06/2026, 21:44:47",
+    "message": "Sismo M7.5 detectado: 28 km SE of Yumare, Venezuela.",
+    "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000t7zp",
+    "city": "Berlim",
+    "loggedAt": "2026-06-29T00:44:47.115Z"
+  },
+  {
+    "type": "danger",
+    "sensor": "sismo",
+    "timestamp": "28/06/2026, 21:44:47",
+    "message": "Sismo M7.2 detectado: 23 km SE of Yumare, Venezuela.",
+    "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000t7zc",
+    "city": "Berlim",
+    "loggedAt": "2026-06-29T00:44:47.115Z"
+  },
+  {
+    "type": "danger",
+    "sensor": "sismo",
+    "timestamp": "28/06/2026, 21:45:19",
+    "message": "Sismo M7.5 detectado: 28 km SE of Yumare, Venezuela.",
+    "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000t7zp",
+    "city": "Berlim",
+    "loggedAt": "2026-06-29T00:45:19.072Z"
+  },
+  {
+    "type": "danger",
+    "sensor": "sismo",
+    "timestamp": "28/06/2026, 21:45:19",
+    "message": "Sismo M7.2 detectado: 23 km SE of Yumare, Venezuela.",
+    "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000t7zc",
+    "city": "Berlim",
+    "loggedAt": "2026-06-29T00:45:19.072Z"
+  },
+  {
+    "type": "danger",
+    "sensor": "sismo",
+    "timestamp": "28/06/2026, 21:45:24",
+    "message": "Sismo M7.5 detectado: 28 km SE of Yumare, Venezuela.",
+    "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000t7zp",
+    "city": "Berlim",
+    "loggedAt": "2026-06-29T00:45:24.391Z"
+  },
+  {
+    "type": "danger",
+    "sensor": "sismo",
+    "timestamp": "28/06/2026, 21:45:24",
+    "message": "Sismo M7.2 detectado: 23 km SE of Yumare, Venezuela.",
+    "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000t7zc",
+    "city": "Berlim",
+    "loggedAt": "2026-06-29T00:45:24.391Z"
+  },
+  {
+    "type": "danger",
+    "sensor": "sismo",
+    "timestamp": "28/06/2026, 21:46:35",
+    "message": "Sismo M7.5 detectado: 28 km SE of Yumare, Venezuela.",
+    "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000t7zp",
+    "city": "Berlim",
+    "loggedAt": "2026-06-29T00:46:35.130Z"
+  },
+  {
+    "type": "danger",
+    "sensor": "sismo",
+    "timestamp": "28/06/2026, 21:46:35",
+    "message": "Sismo M7.2 detectado: 23 km SE of Yumare, Venezuela.",
+    "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000t7zc",
+    "city": "Berlim",
+    "loggedAt": "2026-06-29T00:46:35.130Z"
+  },
+  {
+    "type": "danger",
+    "sensor": "sismo",
+    "timestamp": "28/06/2026, 21:46:50",
+    "message": "Sismo M7.5 detectado: 28 km SE of Yumare, Venezuela.",
+    "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000t7zp",
+    "city": "Berlim",
+    "loggedAt": "2026-06-29T00:46:50.948Z"
+  },
+  {
+    "type": "warning",
+    "sensor": "clima",
+    "timestamp": "28/06/2026, 21:49:08",
+    "message": "Temperatura baixa de 15°C em Cidade do México. Limite: 15°C.",
+    "city": "Cidade do México",
+    "loggedAt": "2026-06-29T00:49:08.777Z"
+  },
+  {
+    "type": "warning",
+    "sensor": "clima",
+    "timestamp": "28/06/2026, 21:49:17",
+    "message": "Temperatura baixa de 14.1°C em Curitiba. Limite: 15°C.",
+    "city": "Curitiba",
+    "loggedAt": "2026-06-29T00:49:17.021Z"
+  },
+  {
+    "type": "warning",
+    "sensor": "clima",
+    "timestamp": "13/07/2026, 18:11:32",
+    "message": "Temperatura baixa de 8.7°C em Curitiba. Limite: 10°C.",
+    "city": "Curitiba",
+    "loggedAt": "2026-07-13T21:11:32.677Z"
+  },
+  {
+    "type": "warning",
+    "sensor": "sismo",
+    "timestamp": "13/07/2026, 18:11:32",
+    "message": "Sismo M4.8 detectado: southeast of the Loyalty Islands.",
+    "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000t05y",
+    "city": "Curitiba",
+    "loggedAt": "2026-07-13T21:11:32.677Z"
+  },
+  {
+    "type": "warning",
+    "sensor": "sismo",
+    "timestamp": "13/07/2026, 18:11:32",
+    "message": "Sismo M4.0 detectado: 215 km WNW of Anamizu, Japan.",
+    "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000t04s",
+    "city": "Curitiba",
+    "loggedAt": "2026-07-13T21:11:32.677Z"
+  },
+  {
+    "type": "warning",
+    "sensor": "sismo",
+    "timestamp": "13/07/2026, 18:11:32",
+    "message": "Sismo M4.9 detectado: South Sandwich Islands region.",
+    "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000t04b",
+    "city": "Curitiba",
+    "loggedAt": "2026-07-13T21:11:32.677Z"
+  },
+  {
+    "type": "warning",
+    "sensor": "sismo",
+    "timestamp": "13/07/2026, 18:11:32",
+    "message": "Sismo M5.0 detectado: 5 km SE of Butulan, Philippines.",
+    "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000t048",
+    "city": "Curitiba",
+    "loggedAt": "2026-07-13T21:11:32.677Z"
+  },
+  {
+    "type": "warning",
+    "sensor": "sismo",
+    "timestamp": "13/07/2026, 18:11:32",
+    "message": "Sismo M4.5 detectado: southeast of the Loyalty Islands.",
+    "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000t044",
+    "city": "Curitiba",
+    "loggedAt": "2026-07-13T21:11:32.677Z"
+  },
+  {
+    "type": "warning",
+    "sensor": "clima",
+    "timestamp": "13/07/2026, 18:12:02",
+    "message": "Temperatura baixa de 8.7°C em Curitiba. Limite: 10°C.",
+    "city": "Curitiba",
+    "loggedAt": "2026-07-13T21:12:02.427Z"
+  },
+  {
+    "type": "warning",
+    "sensor": "sismo",
+    "timestamp": "13/07/2026, 18:12:02",
+    "message": "Sismo M4.8 detectado: southeast of the Loyalty Islands.",
+    "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000t05y",
+    "city": "Curitiba",
+    "loggedAt": "2026-07-13T21:12:02.427Z"
+  },
+  {
+    "type": "warning",
+    "sensor": "sismo",
+    "timestamp": "13/07/2026, 18:12:02",
+    "message": "Sismo M4.0 detectado: 215 km WNW of Anamizu, Japan.",
+    "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000t04s",
+    "city": "Curitiba",
+    "loggedAt": "2026-07-13T21:12:02.427Z"
+  },
+  {
+    "type": "warning",
+    "sensor": "sismo",
+    "timestamp": "13/07/2026, 18:12:02",
+    "message": "Sismo M4.9 detectado: South Sandwich Islands region.",
+    "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000t04b",
+    "city": "Curitiba",
+    "loggedAt": "2026-07-13T21:12:02.427Z"
+  },
+  {
+    "type": "warning",
+    "sensor": "sismo",
+    "timestamp": "13/07/2026, 18:12:02",
+    "message": "Sismo M5.0 detectado: 5 km SE of Butulan, Philippines.",
+    "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000t048",
+    "city": "Curitiba",
+    "loggedAt": "2026-07-13T21:12:02.427Z"
+  },
+  {
+    "type": "warning",
+    "sensor": "sismo",
+    "timestamp": "13/07/2026, 18:12:02",
+    "message": "Sismo M4.5 detectado: southeast of the Loyalty Islands.",
+    "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000t044",
+    "city": "Curitiba",
+    "loggedAt": "2026-07-13T21:12:02.427Z"
+  },
+  {
+    "type": "warning",
+    "sensor": "clima",
+    "timestamp": "13/07/2026, 18:12:32",
+    "message": "Temperatura baixa de 8.7°C em Curitiba. Limite: 10°C.",
+    "city": "Curitiba",
+    "loggedAt": "2026-07-13T21:12:32.845Z"
+  },
+  {
+    "type": "warning",
+    "sensor": "sismo",
+    "timestamp": "13/07/2026, 18:12:32",
+    "message": "Sismo M4.8 detectado: southeast of the Loyalty Islands.",
+    "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000t05y",
+    "city": "Curitiba",
+    "loggedAt": "2026-07-13T21:12:32.845Z"
+  },
+  {
+    "type": "warning",
+    "sensor": "sismo",
+    "timestamp": "13/07/2026, 18:12:32",
+    "message": "Sismo M4.0 detectado: 215 km WNW of Anamizu, Japan.",
+    "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000t04s",
+    "city": "Curitiba",
+    "loggedAt": "2026-07-13T21:12:32.845Z"
+  },
+  {
+    "type": "warning",
+    "sensor": "sismo",
+    "timestamp": "13/07/2026, 18:12:32",
+    "message": "Sismo M4.9 detectado: South Sandwich Islands region.",
+    "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000t04b",
+    "city": "Curitiba",
+    "loggedAt": "2026-07-13T21:12:32.845Z"
+  },
+  {
+    "type": "warning",
+    "sensor": "sismo",
+    "timestamp": "13/07/2026, 18:12:32",
+    "message": "Sismo M5.0 detectado: 5 km SE of Butulan, Philippines.",
+    "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000t048",
+    "city": "Curitiba",
+    "loggedAt": "2026-07-13T21:12:32.845Z"
+  },
+  {
+    "type": "warning",
+    "sensor": "sismo",
+    "timestamp": "13/07/2026, 18:12:32",
+    "message": "Sismo M4.5 detectado: southeast of the Loyalty Islands.",
+    "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000t044",
+    "city": "Curitiba",
+    "loggedAt": "2026-07-13T21:12:32.845Z"
+  },
+  {
+    "type": "warning",
+    "sensor": "clima",
+    "timestamp": "13/07/2026, 18:13:02",
+    "message": "Temperatura baixa de 8.7°C em Curitiba. Limite: 10°C.",
+    "city": "Curitiba",
+    "loggedAt": "2026-07-13T21:13:02.844Z"
+  },
+  {
+    "type": "warning",
+    "sensor": "sismo",
+    "timestamp": "13/07/2026, 18:13:02",
+    "message": "Sismo M4.8 detectado: southeast of the Loyalty Islands.",
+    "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000t05y",
+    "city": "Curitiba",
+    "loggedAt": "2026-07-13T21:13:02.844Z"
+  },
+  {
+    "type": "warning",
+    "sensor": "sismo",
+    "timestamp": "13/07/2026, 18:13:02",
+    "message": "Sismo M4.0 detectado: 215 km WNW of Anamizu, Japan.",
+    "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000t04s",
+    "city": "Curitiba",
+    "loggedAt": "2026-07-13T21:13:02.844Z"
+  },
+  {
+    "type": "warning",
+    "sensor": "sismo",
+    "timestamp": "13/07/2026, 18:13:02",
+    "message": "Sismo M4.9 detectado: South Sandwich Islands region.",
+    "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000t04b",
+    "city": "Curitiba",
+    "loggedAt": "2026-07-13T21:13:02.844Z"
+  },
+  {
+    "type": "warning",
+    "sensor": "sismo",
+    "timestamp": "13/07/2026, 18:13:02",
+    "message": "Sismo M5.0 detectado: 5 km SE of Butulan, Philippines.",
+    "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000t048",
+    "city": "Curitiba",
+    "loggedAt": "2026-07-13T21:13:02.844Z"
+  },
+  {
+    "type": "warning",
+    "sensor": "sismo",
+    "timestamp": "13/07/2026, 18:13:02",
+    "message": "Sismo M4.5 detectado: southeast of the Loyalty Islands.",
+    "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000t044",
+    "city": "Curitiba",
+    "loggedAt": "2026-07-13T21:13:02.844Z"
+  }
+]
