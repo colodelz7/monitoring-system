@@ -6,23 +6,32 @@ Sistema de monitoramento climático e sísmico em tempo real com alertas automá
 
 | Camada | Tecnologia |
 |---|---|
-| Frontend | HTML + CSS + JavaScript |
+| Frontend | React 19 + Vite 5 |
 | Backend | Node.js + Express |
-| Bibliotecas | Plotly.js · Leaflet.js |
+| Bibliotecas | Plotly.js · MapLibre GL |
 | APIs | OpenWeatherMap · USGS Earthquake · Nodemailer |
 
 ## 📁 Estrutura
 
 ```
 ├── frontend/
-│   ├── index.html      # Entrada da aplicação
-│   ├── index.js        # Lógica do dashboard
-│   └── style.css       # Estilos (tema sci-fi azul escuro)
+│   ├── src/
+│   │   ├── components/     # Sidebar, Topbar, WorldClockBar, etc.
+│   │   │   └── tabs/       # Dashboard, Cards, SeismicMap, Compare, etc.
+│   │   ├── hooks/          # useCityData, useGeocodeSearch, useWorldClock, etc.
+│   │   ├── lib/            # api.js, plotlyTheme.js
+│   │   ├── App.jsx
+│   │   ├── main.jsx
+│   │   └── style.css       # Tema sci-fi azul escuro
+│   ├── index.html
+│   ├── vite.config.js
+│   └── package.json
 └── backend/
-    ├── back.js         # Servidor Express
+    ├── back.js             # Servidor Express + rotas da API
+    ├── alerts_log.json     # Gerado automaticamente ao disparar alertas
     ├── package.json
     ├── .gitignore
-    └── .env            # Variáveis de ambiente necessárias
+    └── .env                # Variáveis de ambiente necessárias
 ```
 
 ## 🚀 Rodando localmente
@@ -39,5 +48,6 @@ npm start
 
 ```bash
 cd frontend
-npx serve .
+npm install
+npm run dev
 ```
