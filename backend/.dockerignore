@@ -1,0 +1,10 @@
+node_modules
+npm-debug.log
+.env
+.env.*
+data
+alerts_log.json
+alerts_log.json.migrado
+*.md
+Dockerfile
+.dockerignore

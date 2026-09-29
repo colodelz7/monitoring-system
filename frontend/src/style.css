@@ -1,0 +1,1862 @@
+/* ═══════════════════════════════════════════════════════════
+   RESET & VARS
+═══════════════════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg0:        #010812;
+  --bg1:        #050f1e;
+  --bg2:        #091628;
+  --bg3:        #0d1f38;
+  --bg4:        #122444;
+
+  --cyan:       #00e5ff;
+  --cyan2:      #00b8d4;
+  --cyan-dim:   rgba(0,229,255,0.12);
+  --cyan-glow:  rgba(0,229,255,0.25);
+  --blue:       #0d6efd;
+  --blue2:      #4dabf7;
+  --indigo:     #7c3aed;
+  --green:      #00ff88;
+  --green-dim:  rgba(0,255,136,0.15);
+  --orange:     #ff8c00;
+  --red:        #ff2d55;
+  --white:      #ffffff;
+  --w80:        rgba(255,255,255,0.8);
+  --w50:        rgba(255,255,255,0.5);
+  --w20:        rgba(255,255,255,0.2);
+  --w08:        rgba(255,255,255,0.08);
+  --w04:        rgba(255,255,255,0.04);
+
+  --font:       'Inter', system-ui, sans-serif;
+  --mono:       'JetBrains Mono', monospace;
+  --sidebar-w:  256px;
+  --top-h:      58px;
+  --r:          10px;
+
+  /* Tempos e curvas compartilhados por toda a interface. */
+  --t-fast:     .18s;
+  --t-med:      .34s;
+  --t-slow:     .6s;
+  --ease-out:   cubic-bezier(.22,.61,.36,1);
+  --ease-spring:cubic-bezier(.34,1.56,.64,1);
+  --r-sm:       6px;
+
+  /* Densidade. O painel nasceu confortável, com respiro entre os blocos, e em
+     tela pequena ou com muitas cidades abertas o respiro passa a ser o que
+     impede de ver tudo de uma vez. O modo compacto reduz espaçamento e tamanho
+     de fonte por um multiplicador só, em vez de reescrever cada regra. */
+  --densidade:  1;
+  --gap-base:   16px;
+
+  /* A superfície do mapa acompanha o tema, senão o quadro fica escuro dentro
+     de uma página clara enquanto os tiles carregam. */
+  --map-bg:     #0d1b2a;
+
+  /* Superfícies translúcidas: barra superior, sobreposições do mapa e véus
+     de carregamento. Precisam de nome próprio porque o valor se inverte
+     entre os temas, e antes estavam fixos em azul quase preto. */
+  /* Area sob a linha do grafico: precisa ser discreta, porque cobre metade
+     do quadro quando o eixo comeca no zero. */
+  --violet:     #a78bfa;
+  --lime:       #a3e635;
+  --amber:      #f97316;
+  --chart-fill:   rgba(0,229,255,0.05);
+  --glass:        rgba(5,15,30,0.85);
+  --glass-strong: rgba(1,8,18,0.88);
+  --veil:         rgba(1,8,18,0.72);
+  --hairline:     rgba(0,229,255,0.10);
+  color-scheme: dark;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   TEMA CLARO
+   ═══════════════════════════════════════════════════════════
+   Os nomes das variáveis descrevem a cor literal do tema escuro, que nasceu
+   primeiro. O que vale é o papel de cada uma, e o papel é o mesmo nos dois
+   temas: --bg0 até --bg4 vão do fundo da página até a superfície mais
+   elevada, e --white até --w04 vão do texto mais forte até o preenchimento
+   mais sutil. No claro essa escala é escura sobre fundo claro, então "white"
+   aqui significa "a cor de maior contraste com o fundo", não a cor branca.
+
+   Os acentos também mudam de valor. Ciano #00e5ff e verde #00ff88 brilham
+   sobre preto e somem sobre branco, então o tema claro usa versões
+   rebaixadas, escolhidas para manter contraste de leitura contra a página. */
+:root[data-densidade="compacta"] {
+  --densidade: .72;
+  --top-h:     48px;
+}
+
+:root[data-theme="light"] {
+  --bg0:        #eceff5;
+  --bg1:        #f7f9fc;
+  --bg2:        #ffffff;
+  --bg3:        #f1f4f9;
+  --bg4:        #e5eaf2;
+
+  --cyan:       #0089a7;
+  --cyan2:      #00687e;
+  --cyan-dim:   rgba(0,137,167,0.10);
+  --cyan-glow:  rgba(0,137,167,0.22);
+  --blue:       #0d6efd;
+  --blue2:      #1565c0;
+  --indigo:     #6d28d9;
+  --green:      #00875a;
+  --green-dim:  rgba(0,135,90,0.14);
+  --orange:     #b45309;
+  --red:        #d61f3f;
+
+  --white:      #0b1622;
+  --w80:        rgba(11,22,34,0.82);
+  --w50:        rgba(11,22,34,0.58);
+  /* Estes dois sobem em relação ao escuro de propósito: 0.2 de preto sobre
+     branco fica ilegível, enquanto 0.2 de branco sobre preto ainda se lê. */
+  --w20:        rgba(11,22,34,0.40);
+  --w08:        rgba(11,22,34,0.13);
+  --w04:        rgba(11,22,34,0.05);
+
+  --map-bg:     #dfe5ee;
+  --violet:     #6d28d9;
+  --lime:       #4d7c0f;
+  --amber:      #c2410c;
+  --chart-fill:   rgba(0,137,167,0.07);
+  --glass:        rgba(255,255,255,0.88);
+  --glass-strong: rgba(255,255,255,0.94);
+  --veil:         rgba(240,243,248,0.78);
+  --hairline:     rgba(11,22,34,0.10);
+  color-scheme: light;
+}
+
+/* Sem escolha salva, a preferência do sistema decide. Com escolha salva, o
+   atributo data-theme vence, e é por isso que esta regra não o sobrescreve. */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]):not([data-theme="light"]) {
+    --bg0:        #eceff5;
+    --bg1:        #f7f9fc;
+    --bg2:        #ffffff;
+    --bg3:        #f1f4f9;
+    --bg4:        #e5eaf2;
+
+    --cyan:       #0089a7;
+    --cyan2:      #00687e;
+    --cyan-dim:   rgba(0,137,167,0.10);
+    --cyan-glow:  rgba(0,137,167,0.22);
+    --blue:       #0d6efd;
+    --blue2:      #1565c0;
+    --indigo:     #6d28d9;
+    --green:      #00875a;
+    --green-dim:  rgba(0,135,90,0.14);
+    --orange:     #b45309;
+    --red:        #d61f3f;
+
+    --white:      #0b1622;
+    --w80:        rgba(11,22,34,0.82);
+    --w50:        rgba(11,22,34,0.58);
+    --w20:        rgba(11,22,34,0.40);
+    --w08:        rgba(11,22,34,0.13);
+    --w04:        rgba(11,22,34,0.05);
+
+    --map-bg:     #dfe5ee;
+  --violet:     #6d28d9;
+  --lime:       #4d7c0f;
+  --amber:      #c2410c;
+  --chart-fill:   rgba(0,137,167,0.07);
+  --glass:        rgba(255,255,255,0.88);
+  --glass-strong: rgba(255,255,255,0.94);
+  --veil:         rgba(240,243,248,0.78);
+  --hairline:     rgba(11,22,34,0.10);
+    color-scheme: light;
+  }
+}
+
+html, body { height: 100%; background: var(--bg0); color: var(--white); font-family: var(--font); font-size: 13.5px; overflow: hidden; }
+body { width: 100%; max-width: 100vw; }
+
+#root {
+  width: 100%;
+  min-width: 0;
+  max-width: 100vw;
+  /* O layout em coluna estava declarado no body, mas o React monta tudo aqui
+     dentro, e este elemento não era flex nem tinha altura. A coluna nunca era
+     limitada pela janela: crescia com o conteúdo e o excedente ficava fora de
+     alcance, porque o body recorta o que passa. Só apareceu quando a aba do
+     mapa ganhou gráficos abaixo do globo. */
+  display: flex;
+  height: 100%;
+  min-height: 0;
+}
+
+/* scrollbar */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--bg4); border-radius: 4px; }
+
+/* ═══════════════════════════════════════════════════════════
+   CANVAS DE PARTÍCULAS (fundo)
+═══════════════════════════════════════════════════════════ */
+#particles-canvas {
+  position: fixed; inset: 0; z-index: 0;
+  pointer-events: none;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   LAYOUT
+═══════════════════════════════════════════════════════════ */
+body { display: flex; position: relative; z-index: 1; }
+
+.main-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-width: 0;
+  margin-left: var(--sidebar-w);
+  transition: margin-left .35s cubic-bezier(.4,0,.2,1);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   SIDEBAR
+═══════════════════════════════════════════════════════════ */
+.sidebar {
+  position: fixed; top: 0; left: 0; z-index: 200;
+  width: var(--sidebar-w); height: 100vh;
+  background: linear-gradient(180deg, var(--bg2) 0%, var(--bg0) 100%);
+  border-right: 1px solid rgba(0,229,255,0.1);
+  display: flex; flex-direction: column;
+  overflow-y: auto; overflow-x: hidden;
+  transition: transform .35s cubic-bezier(.4,0,.2,1);
+}
+
+.sidebar::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+  animation: scanline 3s ease-in-out infinite;
+}
+@keyframes scanline { 0%,100%{ opacity:.4 } 50%{ opacity:1 } }
+
+.sidebar-logo {
+  display: flex; align-items: center; gap: 12px;
+  padding: 20px 18px 18px;
+  border-bottom: 1px solid var(--w08);
+  flex-shrink: 0;
+}
+
+.logo-icon {
+  width: 34px; height: 34px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--cyan);
+  /* O brilho fica no próprio traço, não numa moldura em volta dele. */
+  filter: drop-shadow(0 0 7px var(--cyan-glow));
+  animation: logoPulse 4s ease-in-out infinite;
+}
+@keyframes logoPulse {
+  0%,100% { filter: drop-shadow(0 0 6px var(--cyan-glow)) }
+  50%     { filter: drop-shadow(0 0 13px rgba(0,229,255,.5)) }
+}
+
+.logo-title { font-size: .88rem; font-weight: 700; color: var(--white); letter-spacing: .02em; }
+.logo-sub   { font-size: .62rem; font-weight: 600; color: var(--cyan); text-transform: uppercase; letter-spacing: .1em; margin-top: 1px; }
+
+.sidebar-nav { padding: 12px 10px 4px; display: flex; flex-direction: column; gap: 2px; }
+
+.nav-btn {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px; border: none; border-radius: var(--r-sm);
+  background: transparent; color: var(--w50);
+  font-family: var(--font); font-size: .8rem; font-weight: 500;
+  cursor: pointer; text-align: left; position: relative;
+  transition: all .2s ease; overflow: hidden;
+}
+.nav-btn::before {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(90deg, var(--cyan-dim), transparent);
+  opacity: 0; transition: opacity .2s;
+}
+.nav-btn:hover { color: var(--white); }
+.nav-btn:hover::before { opacity: 1; }
+.nav-btn.active {
+  color: var(--cyan);
+  border-left: 2px solid var(--cyan);
+  background: var(--cyan-dim);
+}
+.nav-btn.active::before { opacity: 1; }
+
+.nav-icon { font-size: .85rem; flex-shrink: 0; }
+
+.nav-badge {
+  margin-left: auto; background: var(--red); color: #fff;
+  font-size: .6rem; font-weight: 700; padding: 2px 6px;
+  border-radius: 10px; min-width: 18px; text-align: center;
+  animation: badgePop .3s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes badgePop { from{ transform: scale(0) } to{ transform: scale(1) } }
+
+.sidebar-section {
+  padding: 14px 16px 8px;
+  border-top: 1px solid var(--w08);
+  margin-top: 4px;
+  display: flex; flex-direction: column; gap: 14px;
+}
+
+.section-label {
+  font-size: .62rem; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--cyan); opacity: .7;
+}
+
+.field { display: flex; flex-direction: column; gap: 6px; }
+
+.field-label { font-size: .7rem; color: var(--w50); font-weight: 500; }
+.val-hi      { font-weight: 700; color: var(--cyan); }
+.val-blue    { font-weight: 700; color: var(--blue2); }
+.val-red     { font-weight: 700; color: var(--red); }
+.val-orange  { font-weight: 700; color: var(--orange); }
+
+.input-select {
+  width: 100%; background: var(--bg3);
+  border: 1px solid rgba(0,229,255,0.15); border-radius: var(--r-sm);
+  color: var(--white); font-family: var(--font); font-size: .78rem;
+  padding: 7px 10px; outline: none;
+  transition: border-color .2s, box-shadow .2s;
+}
+.input-select:focus {
+  border-color: var(--cyan);
+  box-shadow: 0 0 0 3px var(--cyan-dim);
+}
+
+.slider {
+  appearance: none; -webkit-appearance: none; width: 100%; height: 3px;
+  background: var(--bg4); border-radius: 2px; outline: none; border: none; cursor: pointer;
+}
+.slider::-webkit-slider-thumb {
+  appearance: none; -webkit-appearance: none; width: 13px; height: 13px; border-radius: 50%;
+  background: var(--cyan); box-shadow: 0 0 8px var(--cyan); cursor: pointer;
+  transition: transform .15s;
+}
+.slider::-webkit-slider-thumb:hover { transform: scale(1.3); }
+.slider-blue::-webkit-slider-thumb   { background: var(--blue2);  box-shadow: 0 0 8px var(--blue2); }
+.slider-red::-webkit-slider-thumb    { background: var(--red);    box-shadow: 0 0 8px var(--red); }
+.slider-orange::-webkit-slider-thumb { background: var(--orange); box-shadow: 0 0 8px var(--orange); }
+
+/* ═══════════════════════════════════════════════════════════
+   FEATURE 1: BUSCA LIVRE COM AUTOCOMPLETE
+═══════════════════════════════════════════════════════════ */
+.city-search-wrap { position: relative; }
+
+.city-input {
+  width: 100%;
+  background: var(--bg3);
+  border: 1px solid rgba(0,229,255,0.15);
+  color: var(--white);
+  font-family: var(--font);
+  font-size: .8rem;
+  padding: 8px 10px;
+  border-radius: var(--r-sm);
+  outline: none;
+  transition: border-color .2s;
+}
+.city-input:focus { border-color: rgba(0,229,255,0.4); }
+
+.city-dropdown {
+  list-style: none; margin: 0; padding: 0;
+  position: absolute;
+  animation: dropdownIn var(--t-fast) var(--ease-out) both;
+  top: calc(100% + 4px);
+  left: 0; right: 0;
+  background: var(--bg3);
+  border: 1px solid rgba(0,229,255,0.2);
+  border-radius: var(--r-sm);
+  z-index: 500;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+}
+
+.city-option {
+  padding: 8px 12px;
+  font-size: .78rem;
+  color: var(--w80);
+  cursor: pointer;
+  transition: background .15s;
+  border-bottom: 1px solid var(--w04);
+}
+.city-option:last-child { border-bottom: none; }
+.city-option:hover,
+.city-option.is-active { background: rgba(0,229,255,0.08); color: var(--cyan); }
+.city-option b { color: var(--cyan); }
+.city-option--muted { color: var(--w20); pointer-events: none; }
+@keyframes dropdownIn { from { opacity: 0; transform: translateY(-4px) } to { opacity: 1; transform: translateY(0) } }
+
+/* ═══════════════════════════════════════════════════════════
+   TOPBAR
+═══════════════════════════════════════════════════════════ */
+.topbar {
+  height: var(--top-h); flex-shrink: 0;
+  background: var(--glass);
+  border-bottom: 1px solid var(--hairline);
+  backdrop-filter: blur(16px);
+  display: flex; align-items: center; padding: 0 20px; gap: 16px;
+  position: relative; z-index: 10;
+}
+
+.topbar::after {
+  content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+  opacity: .4;
+}
+
+.menu-btn {
+  display: none; background: none; border: none; color: var(--w50);
+  font-size: 1.1rem; cursor: pointer; padding: 6px; border-radius: 6px;
+}
+.menu-btn:hover { background: var(--w08); color: var(--white); }
+
+.topbar-left { display: flex; align-items: center; gap: 10px; flex: 1; }
+
+.status-pill {
+  display: flex; align-items: center; gap: 7px;
+  padding: 4px 12px 4px 8px;
+  background: var(--green-dim);
+  border: 1px solid rgba(0,255,136,0.25);
+  border-radius: 20px;
+  transition: all .3s;
+}
+.status-pill.warning { background: rgba(255,140,0,.12); border-color: rgba(255,140,0,.3); }
+.status-pill.danger  { background: rgba(255,45,85,.12);  border-color: rgba(255,45,85,.3); }
+
+.status-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--green); flex-shrink: 0;
+  box-shadow: 0 0 8px var(--green);
+  animation: dotPulse 2s ease-in-out infinite;
+}
+.status-pill.warning .status-dot { background: var(--orange); box-shadow: 0 0 8px var(--orange); }
+.status-pill.danger  .status-dot { background: var(--red);    box-shadow: 0 0 8px var(--red); }
+@keyframes dotPulse { 0%,100%{ opacity:1 } 50%{ opacity:.4 } }
+
+.status-text {
+  font-size: .72rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--green);
+}
+.status-pill.warning .status-text { color: var(--orange); }
+.status-pill.danger  .status-text { color: var(--red); }
+
+.badge {
+  font-size: .6rem; font-weight: 700; letter-spacing: .08em;
+  padding: 2px 8px; border-radius: 20px;
+  animation: badgePop var(--t-med) var(--ease-spring) both;
+}
+.badge--live  { background: rgba(0,229,255,.1); border: 1px solid rgba(0,229,255,.25); color: var(--cyan); }
+.badge--demo  { background: rgba(255,140,0,.1); border: 1px solid rgba(255,140,0,.3); color: var(--orange); }
+.badge--cache { background: rgba(255,140,0,.15); border: 1px solid rgba(255,140,0,.3); color: var(--orange); cursor: help; }
+
+.topbar-right { display: flex; align-items: center; gap: 18px; }
+
+.topbar-stat { display: flex; flex-direction: column; align-items: flex-end; }
+.stat-label  { font-size: .55rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--w20); }
+.stat-val    { font-size: .82rem; font-weight: 600; color: var(--white); font-family: var(--mono); }
+
+.divider { width: 1px; height: 28px; background: var(--w08); }
+
+/* ═══════════════════════════════════════════════════════════
+   BARRA DE CARREGAMENTO
+═══════════════════════════════════════════════════════════ */
+/* Ocupa altura fixa mesmo invisível: aparecer não pode empurrar o conteúdo
+   para baixo, senão o aviso de "estou trabalhando" vira um solavanco. */
+.fetch-bar {
+  height: 2px; flex-shrink: 0; position: relative; overflow: hidden;
+  background: transparent;
+  opacity: 0; transition: opacity var(--t-fast) var(--ease-out);
+}
+.fetch-bar.is-active { opacity: 1; background: var(--w04); }
+
+.fetch-bar__run {
+  position: absolute; inset: 0 auto 0 0;
+  width: 40%;
+  background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+  transform: translateX(-100%);
+}
+.fetch-bar.is-active .fetch-bar__run {
+  animation: loadingRun 1.1s var(--ease-out) infinite;
+}
+
+@keyframes loadingRun {
+  from { transform: translateX(-100%) }
+  to   { transform: translateX(350%) }
+}
+
+/* O contador vira aviso de busca em curso enquanto os dados não chegam. */
+.stat-val.is-busy {
+  display: inline-flex; align-items: center; gap: 5px;
+  color: var(--cyan);
+}
+.stat-val.is-busy svg { animation: spin 1s linear infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .stat-val.is-busy svg { animation: none; opacity: .6; }
+}
+
+/* O botão do período em uso pulsa enquanto a busca daquela janela não volta.
+   É o que liga a espera ao que foi clicado. */
+.period-btn.is-loading { animation: periodPulse 1s ease-in-out infinite; }
+@keyframes periodPulse { 0%,100% { opacity: 1 } 50% { opacity: .55 } }
+
+/* Confirmação discreta de que o limite já valeu, sem botão de salvar. */
+.autosave {
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  height: 30px;
+  font-family: var(--mono); font-size: .64rem; letter-spacing: .04em;
+  color: var(--green);
+  opacity: 0; transform: translateY(-3px);
+  transition: opacity var(--t-med) var(--ease-out), transform var(--t-med) var(--ease-out);
+  pointer-events: none;
+}
+.autosave.is-visible { opacity: 1; transform: translateY(0); }
+
+/* ═══════════════════════════════════════════════════════════
+   FAIXA DE TENDÊNCIA
+═══════════════════════════════════════════════════════════ */
+.trend-strip {
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 10px 18px;
+  padding: 10px 14px;
+  border: 1px solid var(--w08); border-radius: var(--r);
+  background: var(--bg2);
+  animation: fadeSlideUp var(--t-med) var(--ease-out) both;
+}
+
+.trend-main { display: flex; align-items: center; gap: 9px; min-width: 0; }
+.trend-main--quente { color: var(--orange); }
+.trend-main--frio   { color: var(--blue2); }
+.trend-main--neutro { color: var(--w50); }
+
+.trend-text { font-size: .78rem; font-weight: 600; }
+.trend-sub  { font-family: var(--mono); font-size: .64rem; color: var(--w20); }
+
+.trend-records { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 14px; }
+
+.trend-record {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-family: var(--mono); font-size: .64rem; color: var(--w50);
+}
+.trend-base { font-family: var(--mono); font-size: .6rem; color: var(--w20); }
+
+@media (max-width: 760px) {
+  .trend-strip { flex-direction: column; align-items: flex-start; }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   FILTRO DE PERÍODO
+═══════════════════════════════════════════════════════════ */
+.period-filter {
+  display: flex; align-items: center; gap: 2px;
+  padding: 3px; border: 1px solid var(--w08); border-radius: 999px;
+  background: var(--w04); flex-shrink: 0;
+}
+
+.period-btn {
+  border: none; background: transparent; cursor: pointer;
+  padding: 5px 11px; border-radius: 999px;
+  font-family: var(--mono); font-size: .66rem; font-weight: 600;
+  letter-spacing: .04em; color: var(--w50);
+  transition: color var(--t-fast) var(--ease-out),
+              background var(--t-fast) var(--ease-out);
+}
+.period-btn:hover:not(.is-active) { color: var(--w80); background: var(--w04); }
+.period-btn:focus-visible { outline: 2px solid var(--cyan); outline-offset: 1px; }
+
+.period-btn.is-active {
+  color: var(--bg0);
+  background: var(--cyan);
+  box-shadow: 0 0 12px var(--cyan-glow);
+}
+
+/* Em tela estreita o grupo encolhe antes de sumir, porque é controle principal. */
+@media (max-width: 900px) {
+  .period-btn { padding: 5px 8px; font-size: .62rem; }
+}
+
+/* Mesmo peso visual do botão de atualizar, ao lado dele. */
+.theme-btn {
+  width: 34px; height: 34px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  border: 1px solid var(--w08); border-radius: 50%;
+  background: var(--w04); color: var(--w50);
+  cursor: pointer;
+  transition: color var(--t-fast) var(--ease-out),
+              border-color var(--t-fast) var(--ease-out),
+              background var(--t-fast) var(--ease-out),
+              transform var(--t-fast) var(--ease-spring);
+}
+.theme-btn:hover { color: var(--cyan); border-color: var(--cyan-glow); background: var(--cyan-dim); transform: rotate(-18deg); }
+.theme-btn:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+
+.refresh-btn {
+  width: 34px; height: 34px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--cyan-dim), var(--bg3));
+  border: 1px solid rgba(0,229,255,0.3);
+  color: var(--cyan); font-size: 1rem; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .2s; box-shadow: 0 0 12px var(--cyan-dim);
+}
+.refresh-btn:hover { box-shadow: 0 0 20px var(--cyan-glow); transform: scale(1.1); }
+.refresh-btn.is-spinning { animation: spin .5s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ═══════════════════════════════════════════════════════════
+   FEATURE 9: WIDGET HORA MUNDIAL
+═══════════════════════════════════════════════════════════ */
+.world-clock-bar {
+  display: flex;
+  align-items: center;
+  background: var(--bg2);
+  border-bottom: 1px solid rgba(0,229,255,0.06);
+  overflow-x: auto;
+  flex-shrink: 0;
+  scrollbar-width: none;
+}
+.world-clock-bar::-webkit-scrollbar { display: none; }
+
+.wc-item {
+  background: none; border: none; font-family: inherit; color: inherit;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 5px 18px;
+  border-right: 1px solid rgba(255,255,255,0.04);
+  flex-shrink: 0;
+  min-width: 90px;
+  cursor: pointer;
+  transition: background .15s, border-bottom .15s;
+  border-bottom: 2px solid transparent;
+}
+.wc-item:hover { background: rgba(0,229,255,0.05); }
+.wc-item--active {
+  background: rgba(0,229,255,0.07);
+  border-bottom: 2px solid var(--cyan);
+}
+.wc-item--active .wc-name { color: var(--cyan); }
+.wc-item--active .wc-time { color: var(--white); text-shadow: 0 0 8px var(--cyan-glow); }
+.wc-name {
+  font-size: .55rem; font-weight: 600; color: var(--w20);
+  text-transform: uppercase; letter-spacing: .07em; font-family: var(--mono);
+}
+.wc-time {
+  font-size: .8rem; font-weight: 600; color: var(--cyan);
+  font-family: var(--mono); letter-spacing: .04em;
+}
+.wc-date { font-size: .55rem; color: var(--w20); font-family: var(--mono); }
+
+/* ═══════════════════════════════════════════════════════════
+   CONTENT
+═══════════════════════════════════════════════════════════ */
+.content {
+  flex: 1; overflow-y: auto; overflow-x: hidden;
+  padding: calc(18px * var(--densidade)) calc(20px * var(--densidade)) calc(20px * var(--densidade));
+  display: flex; flex-direction: column; gap: calc(var(--gap-base) * var(--densidade));
+  position: relative; z-index: 1;
+  min-width: 0;
+  /* Sem min-height, um item flex nunca encolhe abaixo do próprio conteúdo e o
+     overflow-y acima vira decoração: a área cresce e o excedente fica
+     inalcançável, porque o body tem overflow hidden. Só apareceu quando a aba
+     do mapa passou a ter gráficos abaixo do globo. */
+  min-height: 0;
+}
+
+/* A troca de aba é feita pelo ViewTransition, não por display:none. */
+
+/* ═══════════════════════════════════════════════════════════
+   METRIC CARDS
+═══════════════════════════════════════════════════════════ */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: calc(14px * var(--densidade));
+  min-width: 0;
+}
+
+.card {
+  position: relative; overflow: hidden;
+  background: linear-gradient(135deg, var(--bg2) 0%, var(--bg1) 100%);
+  border: 1px solid var(--w08); border-radius: var(--r);
+  padding: calc(18px * var(--densidade)) 16px; display: flex; align-items: flex-start; gap: calc(14px * var(--densidade));
+  cursor: default;
+  animation: cardIn var(--t-slow) var(--ease-spring) both;
+  transition: transform var(--t-med), box-shadow var(--t-med), border-color var(--t-med);
+  min-width: 0;
+}
+.card { animation-delay: var(--stagger, 0s); }
+.card.is-loading .card-value { color: var(--w20); }
+@keyframes cardIn {
+  from{ opacity:0; transform: translateY(20px) scale(.95) }
+  to  { opacity:1; transform: translateY(0)    scale(1)   }
+}
+.card:hover { transform: translateY(-3px); border-color: rgba(0,229,255,.2); }
+
+.card-accent {
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+  opacity: 0; transition: opacity .3s;
+}
+.card:hover .card-accent { opacity: 1; }
+
+.card-glow {
+  position: absolute; bottom: -30px; right: -30px;
+  width: 100px; height: 100px; border-radius: 50%;
+  opacity: .08; filter: blur(25px); pointer-events: none;
+  transition: opacity .3s;
+}
+.card:hover .card-glow { opacity: .18; }
+
+.card--cyan  .card-glow { background: var(--cyan); }
+.card--blue  .card-glow { background: var(--blue2); }
+.card--aqi   .card-glow { background: var(--green); }
+.card--ind   .card-glow { background: var(--indigo); }
+.card--alert .card-glow { background: var(--green); }
+
+.card-icon {
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: flex-start;
+  /* Sem caixa: o traço sozinho, na cor do cartão. A moldura só repetia a borda
+     que o cartão inteiro já tem, e empilhar retângulo dentro de retângulo é o
+     que faz a tela parecer montada por template. */
+  color: var(--card-accent-color, var(--cyan));
+  opacity: .9;
+}
+
+.card-body { flex: 1; min-width: 0; }
+
+.card-label {
+  font-size: .6rem; font-weight: 700; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--w20); margin-bottom: 6px;
+}
+
+.card-value {
+  font-size: 1.75rem; font-weight: 700; line-height: 1;
+  margin-bottom: 7px; font-family: var(--mono);
+  transition: color .3s;
+}
+.card--cyan  .card-value { color: var(--cyan); }
+.card--blue  .card-value { color: var(--blue2); }
+.card--aqi   .card-value { color: var(--green); }
+.card--ind   .card-value { color: var(--violet); }
+.card--alert .card-value { color: var(--green); }
+
+.card-desc {
+  font-size: .68rem; color: var(--w20);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   CHARTS
+═══════════════════════════════════════════════════════════ */
+.charts-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  min-width: 0;
+}
+
+/* Os gráficos sísmicos vêm em três e são mais baixos: cabem lado a lado em
+   tela larga e empilham sozinhos quando não cabem. */
+.charts-grid--three { grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 16px; }
+@media (max-width: 1100px) { .charts-grid--three { grid-template-columns: 1fr; } }
+
+.chart-card {
+  background: linear-gradient(135deg, var(--bg2) 0%, var(--bg1) 100%);
+  border: 1px solid var(--w08); border-radius: var(--r);
+  padding: calc(16px * var(--densidade)); display: flex; flex-direction: column; gap: calc(12px * var(--densidade));
+  position: relative; overflow: hidden;
+  animation: cardIn .5s .25s cubic-bezier(.34,1.56,.64,1) both;
+  transition: border-color .25s;
+  min-width: 0;
+}
+.chart-card:hover { border-color: rgba(0,229,255,.15); }
+
+.chart-card::after {
+  content: ''; position: absolute; top: 0; right: 0;
+  width: 60px; height: 60px;
+  background: radial-gradient(circle at top right, rgba(0,229,255,.06), transparent 70%);
+  pointer-events: none;
+}
+
+.chart-header { display: flex; align-items: center; justify-content: space-between; }
+
+.chart-title {
+  display: flex; align-items: center; gap: 8px;
+  font-size: .7rem; font-weight: 700; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--w50);
+}
+
+.chart-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+.dot-cyan  { background: var(--cyan);  box-shadow: 0 0 6px var(--cyan); }
+.dot-blue  { background: var(--blue2); box-shadow: 0 0 6px var(--blue2); }
+.dot-ind   { background: var(--violet); box-shadow: 0 0 6px var(--violet); }
+.dot-orange{ background: var(--orange); box-shadow: 0 0 6px var(--orange); }
+
+.chart-badge {
+  font-size: .65rem; font-weight: 700; font-family: var(--mono);
+  color: var(--cyan); background: var(--cyan-dim);
+  border: 1px solid rgba(0,229,255,.2);
+  padding: 2px 10px; border-radius: 20px;
+}
+
+/* A altura do gráfico acompanha a densidade: é ela que domina a rolagem da
+   página, então encolher só o espaçamento em volta não daria diferença. */
+.chart-area { width: 100%; height: calc(var(--chart-h, 220px) * var(--densidade)); min-width: 0; min-height: 140px; }
+/* Um pouco mais baixo que a tela cheia de propósito: deixa o topo do próximo
+   cartão aparecer, que é o que avisa haver mais conteúdo abaixo do globo. */
+.chart-area--tall { height: calc(100vh - 250px); min-height: 420px; }
+
+.chart-card.full-height { flex: 1; min-height: 0; animation-delay: .1s; }
+.view-transition:has(.full-height) { flex: 1; min-height: 0; }
+
+/* ═══════════════════════════════════════════════════════════
+   FEATURE 8: MAPLIBRE GL (GLOBO 3D)
+═══════════════════════════════════════════════════════════ */
+/* Fundo do canvas do mapa. */
+.maplibregl-canvas-container { background: var(--map-bg); }
+
+/* Counter overlay */
+.map-counter {
+  background: var(--glass-strong);
+  border: 1px solid rgba(0,229,255,0.18);
+  border-radius: 8px;
+  padding: 10px 14px;
+  backdrop-filter: blur(8px);
+  font-family: var(--mono);
+  min-width: 140px;
+  pointer-events: none;
+}
+.map-counter-title {
+  font-size: .6rem; font-weight: 700; color: var(--cyan);
+  letter-spacing: .1em; margin-bottom: 7px; text-transform: uppercase;
+}
+.map-counter-row { font-size: .62rem; margin-bottom: 3px; }
+
+/* Legenda */
+.map-legend {
+  background: var(--glass-strong);
+  border: 1px solid rgba(0,229,255,0.18);
+  border-radius: 8px;
+  padding: 10px 14px;
+  backdrop-filter: blur(8px);
+  font-family: var(--mono);
+  min-width: 160px;
+  pointer-events: none;
+}
+.map-legend-title {
+  font-size: .6rem; font-weight: 700; color: var(--cyan);
+  letter-spacing: .1em; margin-bottom: 7px; text-transform: uppercase;
+}
+.map-legend-row {
+  display: flex; align-items: center; gap: 7px;
+  font-size: .62rem; color: rgba(255,255,255,.65);
+  margin-bottom: 4px; white-space: nowrap;
+}
+.map-legend-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  flex-shrink: 0; display: inline-block;
+}
+
+/* Popup MapLibre */
+.ml-popup .maplibregl-popup-content {
+  background: var(--glass-strong) !important;
+  border: 1px solid rgba(0,229,255,0.25) !important;
+  border-radius: 10px !important;
+  color: var(--w80) !important;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.6) !important;
+  font-family: var(--mono) !important;
+  padding: 14px 16px !important;
+}
+.ml-popup .maplibregl-popup-tip { display: none !important; }
+.ml-popup .maplibregl-popup-close-button {
+  color: rgba(255,255,255,0.4) !important;
+  font-size: 18px !important;
+  padding: 4px 8px !important;
+}
+
+/* Controles de navegação */
+.maplibregl-ctrl-group {
+  background: var(--glass) !important;
+  border: 1px solid rgba(0,229,255,0.2) !important;
+  border-radius: 8px !important;
+  backdrop-filter: blur(6px) !important;
+}
+.maplibregl-ctrl-group button {
+  background: transparent !important;
+  color: var(--cyan) !important;
+}
+.maplibregl-ctrl-group button:hover { background: rgba(0,229,255,0.08) !important; }
+.maplibregl-ctrl-attrib { display: none !important; }
+.maplibregl-ctrl-logo   { display: none !important; }
+
+/* ═══════════════════════════════════════════════════════════
+   FEATURE 4: COMPARATIVO DE CIDADES
+═══════════════════════════════════════════════════════════ */
+.compare-controls { margin-bottom: 16px; }
+.compare-inputs {
+  display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap;
+}
+.compare-city-wrap { flex: 1; min-width: 140px; }
+.compare-vs {
+  font-size: .75rem; font-weight: 700; color: var(--w20);
+  font-family: var(--mono); padding-bottom: 10px; flex-shrink: 0;
+}
+
+/* A grade segue a quantidade de cidades, não um número fixo de duas. */
+.compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; min-width: 0; }
+.compare-grid[data-cidades="3"] { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.compare-grid[data-cidades="4"] { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+@media (max-width: 1200px) {
+  .compare-grid[data-cidades="3"],
+  .compare-grid[data-cidades="4"] { grid-template-columns: 1fr 1fr; }
+}
+
+/* O botão de remover mora no próprio rótulo do campo, que é onde o olho já
+   está quando decide tirar aquela cidade. */
+.compare-remove {
+  margin-left: 6px; padding: 0; border: none; background: none;
+  color: var(--w20); cursor: pointer; vertical-align: middle;
+  transition: color var(--t-fast) var(--ease-out);
+}
+.compare-remove:hover { color: var(--red); }
+.compare-remove:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+
+.compare-add { flex-shrink: 0; }
+
+.compare-card {
+  background: var(--bg2); border: 1px solid var(--w08);
+  border-radius: var(--r); padding: 20px;
+  animation: cardIn .4s ease both;
+  min-width: 0;
+}
+
+.compare-city-name {
+  font-size: .7rem; font-weight: 600; color: var(--cyan);
+  text-transform: uppercase; letter-spacing: .08em;
+  font-family: var(--mono); margin-bottom: 8px;
+}
+.compare-temp {
+  font-size: 2.4rem; font-weight: 700; color: var(--white);
+  font-family: var(--mono); line-height: 1; margin-bottom: 4px;
+}
+.compare-desc {
+  font-size: .78rem; color: var(--w80); margin-bottom: 16px; text-transform: capitalize;
+}
+.compare-stats { display: flex; flex-direction: column; gap: 6px; }
+.cstat { display: flex; justify-content: space-between; align-items: center; }
+.cstat-l { font-size: .74rem; color: var(--w50); }
+.cstat-v { font-size: .78rem; font-weight: 600; color: var(--white); font-family: var(--mono); }
+
+/* Uma linha separando cada par ajuda o olho a ligar rótulo e valor quando
+   eles ficam em pontas opostas do cartão. */
+.cstat { padding: 5px 0; border-bottom: 1px solid var(--w04); }
+.cstat:last-child { border-bottom: none; }
+
+
+/* ═══════════════════════════════════════════════════════════
+   BOTÕES
+═══════════════════════════════════════════════════════════ */
+.primary-btn {
+  width: 100%; padding: 9px 14px;
+  /* Ícone e rótulo no mesmo eixo, com respiro entre eles. */
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  background: linear-gradient(135deg, rgba(0,229,255,0.12), rgba(0,229,255,0.06));
+  border: 1px solid rgba(0,229,255,0.3); border-radius: var(--r-sm);
+  color: var(--cyan); font-family: var(--font); font-size: .78rem; font-weight: 600;
+  cursor: pointer; letter-spacing: .04em;
+  transition: background var(--t-fast), box-shadow var(--t-fast), transform var(--t-fast), border-color var(--t-fast);
+  margin-top: 4px;
+}
+.primary-btn:hover:not(:disabled) { background: rgba(0,229,255,0.2); box-shadow: 0 0 16px rgba(0,229,255,0.2); }
+.primary-btn:active:not(:disabled) { transform: translateY(1px); }
+.primary-btn:disabled { opacity: .45; cursor: not-allowed; }
+.primary-btn.is-pending {
+  border-color: rgba(255,140,0,0.5); color: var(--orange); background: rgba(255,140,0,0.08);
+  animation: pendingPulse 1.5s ease-in-out infinite;
+}
+@keyframes pendingPulse {
+  0%,100% { box-shadow: 0 0 0 rgba(255,140,0,0) }
+  50%     { box-shadow: 0 0 14px rgba(255,140,0,0.3) }
+}
+.primary-btn--violet { background: rgba(124,58,237,0.15); border-color: rgba(124,58,237,0.3); color: var(--violet); }
+.primary-btn--violet:hover:not(:disabled) { background: rgba(124,58,237,0.25); box-shadow: 0 0 16px rgba(124,58,237,0.2); }
+.primary-btn--violet.is-active { color: var(--green); border-color: rgba(0,255,136,.35); }
+
+.ghost-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 6px 13px; border-radius: var(--r-sm);
+  background: var(--w04); border: 1px solid var(--w08);
+  color: var(--w50); font-family: var(--font); font-size: .72rem; font-weight: 600;
+  cursor: pointer; white-space: nowrap;
+  transition: color var(--t-fast), border-color var(--t-fast), background var(--t-fast);
+}
+.ghost-btn:hover:not(:disabled) { color: var(--white); border-color: rgba(0,229,255,.3); background: rgba(0,229,255,.06); }
+.ghost-btn:disabled { opacity: .35; cursor: not-allowed; }
+.ghost-btn--danger:hover:not(:disabled) { color: var(--red); border-color: rgba(255,45,85,.4); background: rgba(255,45,85,.07); }
+
+/* Botão armado: o segundo clique é o que apaga, então ele para de parecer um
+   botão qualquer enquanto espera a confirmação. */
+.ghost-btn--danger.is-armed {
+  color: var(--red);
+  border-color: var(--red);
+  background: rgba(255,45,85,.12);
+  animation: armed-pulse 1.1s var(--ease-out) infinite;
+}
+
+@keyframes armed-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255,45,85,.35); }
+  50%      { box-shadow: 0 0 0 5px rgba(255,45,85,0); }
+}
+
+/* Dígitos de largura fixa: o contador anima sem empurrar o texto vizinho. */
+.tabular { font-variant-numeric: tabular-nums; font-feature-settings: 'tnum'; }
+
+/* ═══════════════════════════════════════════════════════════
+   COMPARATIVO: complementos
+═══════════════════════════════════════════════════════════ */
+.cstat--winner .cstat-v { color: var(--green); }
+.cstat-trophy { margin-left: 5px; }
+.compare-mock { margin-top: 10px; font-size: .64rem; color: var(--w50); font-family: var(--mono); }
+.compare-verdict {
+  margin-bottom: 14px; padding: 10px 14px; border-radius: var(--r-sm);
+  background: rgba(0,229,255,.06); border: 1px solid rgba(0,229,255,.15);
+  font-size: .78rem; color: var(--w80);
+  animation: fadeSlideUp var(--t-med) var(--ease-out) both;
+}
+.compare-verdict b { color: var(--cyan); }
+.compare-skeleton {
+  height: 280px; border-radius: var(--r);
+  background: var(--bg2); border: 1px solid var(--w08);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   FILTROS DO HISTÓRICO
+═══════════════════════════════════════════════════════════ */
+.filter-bar {
+  display: flex; flex-wrap: wrap; align-items: flex-end; gap: 10px;
+  padding: 14px 16px; border-radius: var(--r);
+  background: var(--bg2); border: 1px solid var(--w08);
+  animation: fadeSlideUp var(--t-med) var(--ease-out) both;
+}
+.filter-field { display: flex; flex-direction: column; gap: 5px; min-width: 132px; }
+.filter-field--grow { flex: 1 1 220px; }
+.filter-field .input-select { font-size: .75rem; }
+
+.stat-strip { display: flex; flex-wrap: wrap; gap: 8px; }
+.stat-chip {
+  font-size: .65rem; font-weight: 600; font-family: var(--mono);
+  padding: 3px 10px; border-radius: 20px;
+  background: var(--w04); border: 1px solid var(--w08); color: var(--w50);
+}
+.stat-chip--danger  { background: rgba(255,45,85,.1);  border-color: rgba(255,45,85,.25);  color: var(--red); }
+.stat-chip--warning { background: rgba(255,140,0,.1); border-color: rgba(255,140,0,.25); color: var(--orange); }
+
+.pagination { display: flex; align-items: center; justify-content: center; gap: 14px; padding: 6px 0 2px; }
+.pagination-label { font-size: .7rem; color: var(--w20); font-family: var(--mono); }
+
+.inline-notice {
+  padding: 10px 14px; border-radius: var(--r-sm);
+  background: rgba(255,140,0,.08); border: 1px solid rgba(255,140,0,.25);
+  color: var(--orange); font-size: .75rem;
+  animation: fadeSlideUp var(--t-med) var(--ease-out) both;
+}
+.inline-notice--error { background: rgba(255,45,85,.08); border-color: rgba(255,45,85,.25); color: var(--red); }
+
+.lazy-fallback {
+  display: flex; align-items: center; justify-content: center;
+  min-height: 220px; color: var(--w20); font-family: var(--mono); font-size: .75rem;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ALERTAS & HISTÓRICO
+═══════════════════════════════════════════════════════════ */
+.alerts-header {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: 14px; flex-wrap: wrap; padding-bottom: 4px;
+}
+.alerts-title { font-size: 1rem; font-weight: 700; }
+.alerts-count { font-size: .68rem; color: var(--w20); font-family: var(--mono); }
+
+.alerts-list { display: flex; flex-direction: column; gap: 10px; }
+/* Recarregar com filtro novo escurece a lista em vez de esvaziá-la, então a
+   altura da página não muda enquanto a resposta não chega. */
+.alerts-list.is-refreshing { opacity: .55; transition: opacity var(--t-fast); }
+
+.alert-item {
+  display: flex; align-items: flex-start; gap: 14px; width: 100%;
+  padding: calc(14px * var(--densidade)) 16px; border-radius: var(--r-sm);
+  background: var(--bg2); border: 1px solid transparent;
+  position: relative; overflow: hidden; text-align: left;
+  font-family: inherit; color: inherit;
+  animation: alertSlide var(--t-med) var(--ease-spring) both;
+  animation-delay: var(--stagger, 0s);
+  transition: transform var(--t-fast), border-color var(--t-fast), background var(--t-fast);
+}
+@keyframes alertSlide {
+  from { opacity: 0; transform: translateX(-16px) }
+  to   { opacity: 1; transform: translateX(0) }
+}
+.alert-item--clickable { cursor: pointer; }
+.alert-item--clickable:hover { transform: translateX(4px); }
+.alert-item--clickable:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+.alert-item.danger  { border-color: rgba(255,45,85,.25);  background: rgba(255,45,85,.05);  border-left: 3px solid var(--red); }
+.alert-item.warning { border-color: rgba(255,140,0,.25); background: rgba(255,140,0,.05); border-left: 3px solid var(--orange); }
+
+.alert-ico { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+.alert-body { flex: 1; min-width: 0; }
+
+.alert-tags { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-bottom: 6px; }
+
+.alert-sensor {
+  display: inline-block; font-size: .58rem; font-weight: 700;
+  letter-spacing: .08em; text-transform: uppercase;
+  padding: 2px 8px; border-radius: 20px;
+  background: var(--w08); color: var(--w50);
+}
+.danger  .alert-sensor { background: rgba(255,45,85,.2);  color: var(--red); }
+.warning .alert-sensor { background: rgba(255,140,0,.2); color: var(--orange); }
+
+.alert-tag {
+  font-size: .58rem; font-weight: 600; font-family: var(--mono);
+  padding: 2px 8px; border-radius: 20px;
+  background: var(--w04); border: 1px solid var(--w08); color: var(--w50);
+}
+.alert-tag--metric { color: var(--cyan); border-color: rgba(0,229,255,.2); background: rgba(0,229,255,.06); }
+
+.alert-msg  { font-size: .78rem; color: var(--w80); line-height: 1.45; }
+.alert-link { color: var(--cyan); font-size: .7rem; text-decoration: none; margin-left: 6px; }
+.alert-link:hover { text-decoration: underline; }
+
+.alert-time {
+  display: flex; align-items: center; gap: 6px;
+  font-size: .62rem; color: var(--w20); font-family: var(--mono);
+  white-space: nowrap; flex-shrink: 0; margin-top: 2px;
+}
+.alert-chevron { font-size: .95rem; opacity: 0; transform: translateX(-4px); transition: opacity var(--t-fast), transform var(--t-fast); }
+.alert-item--clickable:hover .alert-chevron { opacity: .7; transform: translateX(0); }
+
+/* Placeholder com a altura exata da linha real. */
+.alert-skeleton {
+  height: 74px; border-radius: var(--r-sm);
+  background: linear-gradient(100deg, var(--bg2) 30%, var(--bg3) 50%, var(--bg2) 70%);
+  background-size: 220% 100%;
+  animation: shimmer 1.4s linear infinite;
+}
+.chart-skeleton {
+  border-radius: var(--r-sm);
+  background: linear-gradient(100deg, var(--bg2) 30%, var(--bg3) 50%, var(--bg2) 70%);
+  background-size: 220% 100%;
+  animation: shimmer 1.4s linear infinite;
+}
+@keyframes shimmer { from { background-position: 200% 0 } to { background-position: -40% 0 } }
+
+/* ═══════════════════════════════════════════════════════════
+   DETALHE DO ALERTA
+═══════════════════════════════════════════════════════════ */
+.detail-backdrop {
+  position: fixed; inset: 0; z-index: 800;
+  background: var(--veil); backdrop-filter: blur(3px);
+  display: flex; justify-content: flex-end;
+  animation: fadeIn var(--t-fast) ease both;
+}
+@keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
+
+.detail-panel {
+  width: min(440px, 100%); height: 100%; overflow-y: auto;
+  padding: 22px 24px 32px;
+  background: linear-gradient(180deg, var(--bg2), var(--bg0));
+  border-left: 1px solid rgba(0,229,255,.18);
+  display: flex; flex-direction: column; gap: 16px;
+  animation: slideInRight var(--t-med) var(--ease-out) both;
+}
+@keyframes slideInRight { from { transform: translateX(28px); opacity: 0 } to { transform: translateX(0); opacity: 1 } }
+.detail-panel--danger  { border-left-color: rgba(255,45,85,.4); }
+.detail-panel--warning { border-left-color: rgba(255,140,0,.4); }
+
+.detail-header { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.detail-header > div { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+.detail-severity {
+  font-size: .58rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+  padding: 2px 9px; border-radius: 20px;
+}
+.detail-severity--danger  { background: rgba(255,45,85,.18);  color: var(--red); }
+.detail-severity--warning { background: rgba(255,140,0,.18); color: var(--orange); }
+
+.detail-close {
+  background: none; border: none; color: var(--w50);
+  font-size: 1rem; cursor: pointer; padding: 6px 8px; border-radius: var(--r-sm);
+  transition: color var(--t-fast), background var(--t-fast);
+}
+.detail-close:hover { color: var(--white); background: var(--w08); }
+
+.detail-title { font-size: .95rem; font-weight: 600; line-height: 1.45; color: var(--white); }
+
+.detail-measure {
+  display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 12px;
+  padding: 16px; border-radius: var(--r);
+  background: var(--bg1); border: 1px solid var(--w08);
+}
+.detail-measure-item { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+.detail-measure-label { font-size: .56rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--w20); }
+.detail-measure-value { font-size: 1.35rem; font-weight: 700; font-family: var(--mono); color: var(--cyan); }
+.detail-measure-value--muted { color: var(--w50); }
+.detail-measure-arrow { font-size: 1.1rem; color: var(--w20); }
+
+.detail-sentence { font-size: .76rem; line-height: 1.6; color: var(--w50); }
+.detail-sentence b { color: var(--w80); }
+
+.detail-grid { display: flex; flex-direction: column; gap: 1px; background: var(--w08); border-radius: var(--r-sm); overflow: hidden; }
+.detail-row { display: flex; justify-content: space-between; align-items: baseline; gap: 14px; padding: 9px 13px; background: var(--bg1); }
+.detail-label { font-size: .66rem; color: var(--w20); flex-shrink: 0; }
+.detail-value { font-size: .72rem; color: var(--w80); text-align: right; word-break: break-word; }
+.detail-code { font-family: var(--mono); font-size: .6rem; color: var(--w50); }
+
+.detail-link { color: var(--cyan); font-size: .75rem; text-decoration: none; }
+.detail-link:hover { text-decoration: underline; }
+
+.detail-legacy {
+  font-size: .68rem; line-height: 1.55; color: var(--w20);
+  padding: 10px 12px; border-radius: var(--r-sm);
+  background: var(--w04); border: 1px solid var(--w08);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   MAPA: complementos
+═══════════════════════════════════════════════════════════ */
+.map-wrap { border-radius: var(--r); overflow: hidden; position: relative; }
+.map-canvas { width: 100%; height: 100%; }
+.map-message {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  color: var(--w20); font-size: .8rem; font-family: var(--mono); pointer-events: none;
+}
+.map-counter, .map-legend { position: absolute; top: 10px; z-index: 10; pointer-events: none; }
+.map-counter { left: 10px; }
+.map-legend  { right: 10px; }
+
+.ml-popup-body { font-family: var(--mono); padding: 2px; }
+.ml-popup-mag { display: flex; align-items: center; gap: 7px; font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+.ml-popup-badge { color: var(--bg0); padding: 1px 7px; border-radius: 4px; font-size: 10px; }
+.ml-popup-line { font-size: 11px; color: var(--w80); margin-bottom: 3px; }
+.ml-popup-meta { font-size: 10px; color: var(--w50); }
+.ml-popup-link { color: var(--cyan); font-size: 10px; display: block; margin-top: 8px; text-decoration: none; }
+.ml-popup-link:hover { text-decoration: underline; }
+
+/* ═══════════════════════════════════════════════════════════
+   ESTADOS VAZIOS
+═══════════════════════════════════════════════════════════ */
+.empty-state {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 60px 20px; gap: 10px; text-align: center;
+  background: var(--bg2); border-radius: var(--r); border: 1px solid var(--w08);
+  animation: fadeSlideUp var(--t-med) var(--ease-out) both;
+}
+.empty-icon { font-size: 2.5rem; animation: floatIcon 3s ease-in-out infinite; }
+@keyframes floatIcon { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-8px) } }
+.empty-text { font-size: .95rem; font-weight: 600; color: var(--w80); }
+.empty-sub  { font-size: .75rem; color: var(--w20); max-width: 42ch; }
+
+/* ═══════════════════════════════════════════════════════════
+   SPINNER & ABERTURA
+═══════════════════════════════════════════════════════════ */
+.spinner {
+  display: inline-block; width: 18px; height: 18px;
+  border: 2px solid var(--w08); border-top-color: var(--cyan); border-radius: 50%;
+  animation: spin .6s linear infinite; vertical-align: middle;
+}
+
+.loading-overlay {
+  position: fixed; inset: 0; z-index: 9999;
+  background: var(--bg0);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 20px; transition: opacity .6s ease;
+}
+.loading-overlay.is-hidden { opacity: 0; pointer-events: none; }
+
+.loading-logo { font-size: 3rem; animation: logoPulse 1.5s ease-in-out infinite; }
+.loading-title {
+  font-size: 1.1rem; font-weight: 700; color: var(--cyan);
+  letter-spacing: .15em; text-transform: uppercase; font-family: var(--mono);
+}
+.loading-bar-wrap { width: 220px; height: 2px; background: var(--bg3); border-radius: 2px; overflow: hidden; }
+.loading-bar {
+  height: 100%; width: 0;
+  background: linear-gradient(90deg, var(--cyan2), var(--cyan));
+  border-radius: 2px; box-shadow: 0 0 8px var(--cyan);
+  animation: loadBar 1.8s ease-in-out forwards;
+}
+@keyframes loadBar { 0% { width: 0 } 60% { width: 70% } 100% { width: 100% } }
+.loading-sub { font-size: .7rem; color: var(--w20); font-family: var(--mono); letter-spacing: .08em; }
+
+/* ═══════════════════════════════════════════════════════════
+   TRANSIÇÃO ENTRE VISTAS
+   A saída é mais curta que a entrada: o conteúdo antigo some rápido e o novo
+   assenta com calma, que é o que dá a sensação de avanço em vez de troca.
+═══════════════════════════════════════════════════════════ */
+.view-transition { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.view-transition--in  { animation: viewIn var(--t-med) var(--ease-out) both; }
+.view-transition--out { animation: viewOut 140ms ease-in both; }
+
+@keyframes viewIn  { from { opacity: 0; transform: translateY(10px) } to { opacity: 1; transform: translateY(0) } }
+@keyframes viewOut { from { opacity: 1; transform: translateY(0) }   to { opacity: 0; transform: translateY(-6px) } }
+
+@keyframes fadeSlideUp { from { opacity: 0; transform: translateY(12px) } to { opacity: 1; transform: translateY(0) } }
+
+/* ═══════════════════════════════════════════════════════════
+   RESPONSIVO
+═══════════════════════════════════════════════════════════ */
+@media (max-width: 1400px) {
+  .cards-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 1100px) {
+  .cards-grid  { grid-template-columns: repeat(2, 1fr); }
+  .charts-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 768px) {
+  :root { --sidebar-w: 0px; }
+  .sidebar { transform: translateX(-256px); }
+  .sidebar.open { transform: translateX(0); width: 256px; }
+  .main-wrapper { margin-left: 0; }
+  .menu-btn { display: flex; }
+  .detail-panel { width: 100%; }
+  .filter-field { min-width: 0; flex: 1 1 140px; }
+
+  /* A barra superior tinha 601px de conteúdo numa tela de 390 e o excedente
+     ficava cortado. Em duas linhas tudo cabe: status e período em cima, os
+     números embaixo. Duas linhas custam altura, e altura é o que sobra num
+     celular; largura é o que falta. */
+  .topbar {
+    height: auto; flex-wrap: wrap; row-gap: 8px;
+    padding: 10px 14px;
+  }
+  .topbar-left { flex: 1 1 auto; min-width: 0; }
+  .period-filter { order: 3; flex: 1 1 100%; justify-content: space-between; }
+  .period-btn { flex: 1; text-align: center; }
+  .topbar-right { flex: 0 0 auto; gap: 10px; }
+
+  /* Nome da cidade e horário bastam. A contagem para a próxima atualização é
+     informação de acompanhamento, não de leitura, e some primeiro. */
+  .topbar-right .divider { display: none; }
+  .topbar-right .topbar-stat:nth-of-type(3) { display: none; }
+
+  .world-clock-bar { display: none; }
+
+  /* Um cartão por linha: cinco colunas espremidas em 350px não se lê. */
+  .cards-grid { grid-template-columns: 1fr; }
+  .charts-grid,
+  .charts-grid--three { grid-template-columns: 1fr; }
+  .compare-grid,
+  .compare-grid[data-cidades="3"],
+  .compare-grid[data-cidades="4"] { grid-template-columns: 1fr; }
+  .compare-inputs { flex-direction: column; align-items: stretch; }
+
+  .content { padding: 12px 14px 16px; }
+  .chart-area--tall { height: 60vh; min-height: 320px; }
+
+  /* O robô encolhe para não cobrir conteúdo numa tela pequena. */
+  .bot-fab { right: 10px; bottom: 8px; transform: scale(.8); }
+  .bot-panel { right: 8px; left: 8px; width: auto; bottom: 74px; }
+}
+@media (max-width: 600px) {
+  .compare-grid { grid-template-columns: 1fr; }
+  .detail-measure { grid-template-columns: 1fr; text-align: left; }
+  .detail-measure-arrow { transform: rotate(90deg); }
+}
+@media (max-width: 480px) {
+  .cards-grid { grid-template-columns: 1fr; }
+  .alert-time { display: none; }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   MOVIMENTO REDUZIDO
+   Tudo que se move por decoração para de mover. O que comunica estado (o ponto
+   de status, o botão de refresh girando) vira uma mudança instantânea, não
+   desaparece, senão o painel perde sinal em vez de perder enfeite.
+═══════════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .card:hover,
+  .alert-item--clickable:hover { transform: none; }
+
+  .empty-icon,
+  .logo-icon,
+  .loading-logo,
+  .sidebar::before,
+  .alert-skeleton,
+  .chart-skeleton { animation: none !important; }
+
+  /* O ponto de status para de pulsar mas continua colorido, e o refresh mostra
+     que está ocupado pela opacidade em vez do giro. */
+  .status-dot { animation: none !important; opacity: 1; }
+  .refresh-btn.is-spinning { animation: none !important; opacity: .5; }
+
+  .loading-bar.is-active .loading-bar__run {
+    animation: none !important;
+    width: 100%; transform: none; opacity: .7;
+  }
+  .period-btn.is-loading { animation: none !important; opacity: .7; }
+  .spinner { animation: none !important; border-top-color: var(--cyan); opacity: .7; }
+
+  /* O botão armado para de pulsar, mas a cor e a borda vermelhas continuam
+     dizendo que o próximo clique apaga. */
+  .ghost-btn--danger.is-armed { animation: none !important; box-shadow: 0 0 0 2px rgba(255,45,85,.3); }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ÍCONES
+═══════════════════════════════════════════════════════════ */
+/* Alinham pela linha de base do texto ao lado, em vez de assentar no chão da
+   linha, que é o que faz ícone parecer desencaixado do rótulo. */
+.icon { display: inline-block; vertical-align: -0.16em; flex: none; }
+
+.bullet { display: inline-block; border-radius: 50%; flex: none; vertical-align: middle; }
+
+/* Ícone de navegação: acompanha o estado do botão em vez de ficar sempre igual. */
+.nav-btn .icon { color: var(--w30); transition: color var(--t-fast) var(--ease-out); }
+.nav-btn:hover .icon { color: var(--w60); }
+.nav-btn.active .icon { color: var(--cyan); }
+
+.section-label .icon { color: var(--w30); }
+
+/* ═══════════════════════════════════════════════════════════
+   MAPA: barra de ferramentas e legenda interativa
+═══════════════════════════════════════════════════════════ */
+.map-toolbar { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
+
+.map-tool {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: var(--bg3); border: 1px solid rgba(0,229,255,0.16);
+  color: var(--w50); font-family: var(--mono); font-size: .6rem;
+  letter-spacing: .06em; text-transform: uppercase;
+  padding: 5px 9px; border-radius: var(--r-sm); cursor: pointer;
+  transition: color var(--t-fast) var(--ease-out),
+              border-color var(--t-fast) var(--ease-out),
+              background var(--t-fast) var(--ease-out);
+  max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.map-tool:hover:not(:disabled) { color: var(--cyan); border-color: var(--cyan); background: var(--cyan-dim); }
+.map-tool:disabled { opacity: .4; cursor: not-allowed; }
+
+.map-message--error { color: var(--red); background: rgba(1,8,18,.82); gap: 8px; }
+.map-message { display: flex; align-items: center; justify-content: center; gap: 8px; }
+
+.map-legend-row {
+  display: flex; align-items: center; gap: 7px; width: 100%;
+  background: none; border: none; padding: 3px 2px;
+  color: inherit; font: inherit; font-size: .62rem;
+  cursor: pointer; text-align: left; border-radius: 4px;
+  transition: opacity var(--t-fast) var(--ease-out), background var(--t-fast) var(--ease-out);
+}
+.map-legend-row:hover { background: var(--w08); }
+/* Faixa desligada continua legível: o que muda é o peso, não a presença. */
+.map-legend-row.is-off { opacity: .35; text-decoration: line-through; }
+
+.map-legend { pointer-events: auto; }
+.map-legend-hint {
+  font-size: .52rem; color: var(--w20); margin-top: 5px;
+  letter-spacing: .06em; text-transform: uppercase;
+}
+
+/* Elementos pequenos que passaram a carregar ícone junto do texto. */
+.badge,
+.chart-badge,
+.stat-chip,
+.alert-tag,
+.map-counter-title,
+.map-counter-row,
+.map-legend-title,
+.empty-icon,
+.card-icon,
+.section-label,
+.logo-icon,
+.loading-logo,
+.alert-ico {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.map-counter-row, .map-legend-title, .map-counter-title { display: flex; }
+.empty-icon, .logo-icon, .loading-logo, .alert-ico { justify-content: center; }
+.section-label { gap: 7px; }
+
+/* O botão flutuante do assistente mora no canto inferior direito da janela, que
+   é exatamente onde o MapLibre coloca zoom e bússola. Sobem para não ficarem
+   inalcançáveis atrás dele. */
+.maplibregl-ctrl-bottom-right { margin-bottom: 76px; }
+
+@media (max-width: 560px) {
+  .maplibregl-ctrl-bottom-right { margin-bottom: 66px; }
+}
+
+/* Link que age como botão e precisa parecer desabilitado quando não há o que
+   baixar. aria-disabled comunica para leitor de tela; pointer-events tira o
+   clique, já que link não aceita o atributo disabled. */
+.ghost-btn.is-disabled { opacity: .35; pointer-events: none; }
+a.ghost-btn { text-decoration: none; }
+
+/* A barra do histórico ganhou botões e passa a poder quebrar em telas estreitas. */
+.alerts-header { flex-wrap: wrap; gap: 10px; }
+.alerts-header > div:first-child { flex: 1 1 220px; }
+
+/* ═══════════════════════════════════════════════════════════
+   ATALHOS DE TECLADO
+═══════════════════════════════════════════════════════════ */
+.shortcut-hint {
+  background: none; border: none; padding: 0 2px; cursor: pointer;
+  display: flex; align-items: center;
+}
+.shortcut-hint kbd,
+.shortcuts-key {
+  font-family: var(--mono); font-size: .62rem; font-weight: 600;
+  color: var(--w50); background: var(--bg3);
+  border: 1px solid var(--w08); border-bottom-width: 2px;
+  border-radius: 5px; padding: 3px 7px; min-width: 22px; text-align: center;
+  transition: color var(--t-fast), border-color var(--t-fast);
+}
+.shortcut-hint:hover kbd { color: var(--cyan); border-color: rgba(0,229,255,.35); }
+
+.shortcuts-backdrop {
+  position: fixed; inset: 0; z-index: 500;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--veil); backdrop-filter: blur(3px);
+  animation: fadeIn var(--t-fast) var(--ease-out) both;
+  padding: 20px;
+}
+@keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
+
+.shortcuts-card {
+  width: min(560px, 100%);
+  background: linear-gradient(180deg, var(--bg2), var(--bg0));
+  border: 1px solid rgba(0,229,255,.22); border-radius: 14px;
+  padding: 18px 20px 16px;
+  box-shadow: 0 24px 60px rgba(0,0,0,.6);
+  animation: shortcutsIn var(--t-med) var(--ease-spring) both;
+  max-height: 90vh; overflow-y: auto;
+}
+@keyframes shortcutsIn { from { opacity: 0; transform: translateY(12px) scale(.97) } to { opacity: 1; transform: none } }
+
+.shortcuts-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.shortcuts-title { font-size: .95rem; font-weight: 700; color: var(--white); }
+
+.shortcuts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 18px; }
+.shortcuts-group { display: flex; flex-direction: column; gap: 7px; }
+.shortcuts-group__title {
+  font-family: var(--mono); font-size: .58rem; font-weight: 700;
+  color: var(--cyan); letter-spacing: .12em; text-transform: uppercase;
+  opacity: .75; margin-bottom: 2px;
+}
+.shortcuts-row { display: flex; align-items: center; gap: 10px; }
+.shortcuts-label { font-size: .76rem; color: var(--w50); }
+.shortcuts-note {
+  margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--w08);
+  font-size: .7rem; color: var(--w20); line-height: 1.5;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shortcuts-backdrop, .shortcuts-card { animation: none !important; }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   CONTROLES REAPROVEITADOS
+   Botão de ícone, interruptor e grupo segmentado. Nasceram para as regras e a
+   lista acompanhada, mas nenhum deles é específico dessas telas.
+═══════════════════════════════════════════════════════════ */
+.icon-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 26px; height: 26px; flex: 0 0 auto;
+  border-radius: var(--r-sm);
+  background: var(--w04); border: 1px solid var(--w08);
+  color: var(--w50); cursor: pointer;
+  transition: color var(--t-fast), border-color var(--t-fast), background var(--t-fast);
+}
+.icon-btn:hover:not(:disabled) { color: var(--white); border-color: rgba(0,229,255,.3); background: rgba(0,229,255,.08); }
+.icon-btn:disabled { opacity: .3; cursor: not-allowed; }
+.icon-btn--danger:hover:not(:disabled) { color: var(--red); border-color: rgba(255,45,85,.4); background: rgba(255,45,85,.08); }
+
+/* Armado quer dizer que o próximo clique executa. O botão para de parecer
+   neutro enquanto espera a confirmação. */
+.icon-btn--danger.is-armed {
+  color: var(--red); border-color: var(--red); background: rgba(255,45,85,.14);
+  animation: armed-pulse 1.1s var(--ease-out) infinite;
+}
+
+.toggle-btn {
+  position: relative;
+  width: 36px; height: 20px; flex: 0 0 auto; padding: 0;
+  border-radius: 10px;
+  background: var(--w08); border: 1px solid var(--w08);
+  cursor: pointer;
+  transition: background var(--t-fast), border-color var(--t-fast);
+}
+.toggle-btn .toggle-knob {
+  position: absolute; top: 2px; left: 2px;
+  width: 14px; height: 14px; border-radius: 50%;
+  background: var(--w50);
+  transition: transform var(--t-fast) var(--ease-spring), background var(--t-fast);
+}
+.toggle-btn.is-on { background: rgba(0,229,255,.18); border-color: rgba(0,229,255,.4); }
+.toggle-btn.is-on .toggle-knob { transform: translateX(16px); background: var(--cyan); }
+
+.segmented {
+  display: flex; gap: 4px;
+  padding: 3px; border-radius: var(--r-sm);
+  background: var(--w04); border: 1px solid var(--w08);
+}
+.segmented--wrap { flex-wrap: wrap; }
+.segmented-btn {
+  flex: 1 1 auto; padding: 5px 8px;
+  border: none; border-radius: calc(var(--r-sm) - 2px);
+  background: transparent; color: var(--w50);
+  font-family: var(--font); font-size: .68rem; font-weight: 600;
+  cursor: pointer; white-space: nowrap;
+  transition: color var(--t-fast), background var(--t-fast);
+}
+.segmented-btn:hover { color: var(--white); }
+.segmented-btn.is-on { background: rgba(0,229,255,.14); color: var(--cyan); }
+
+.ghost-btn--block { width: 100%; margin-top: 8px; }
+
+/* No cabeçalho das abas o botão principal divide a linha com o título, então
+   ali ele não ocupa a largura toda como faz na barra lateral. */
+.alerts-header .primary-btn { width: auto; margin-top: 0; }
+.alerts-header .primary-btn.is-active { color: var(--orange); border-color: rgba(255,140,0,.4); }
+
+.section-count { margin-left: auto; color: var(--w20); font-size: .68rem; }
+.section-empty { color: var(--w50); font-size: .72rem; line-height: 1.5; margin: 2px 0 4px; }
+
+/* ═══════════════════════════════════════════════════════════
+   CIDADES ACOMPANHADAS
+═══════════════════════════════════════════════════════════ */
+.watch-list { display: flex; flex-direction: column; gap: 4px; }
+
+.watch-item {
+  display: flex; align-items: center; gap: 4px;
+  border-radius: var(--r-sm);
+  transition: background var(--t-fast);
+}
+.watch-item:hover { background: var(--w04); }
+.watch-item.is-current { background: rgba(0,229,255,.07); box-shadow: inset 2px 0 0 var(--cyan); }
+
+.watch-main {
+  flex: 1; display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  padding: 7px 9px;
+  background: none; border: none; cursor: pointer;
+  font-family: var(--font); text-align: left;
+}
+.watch-name {
+  color: var(--w80); font-size: .74rem; font-weight: 600;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.watch-item.is-current .watch-name { color: var(--cyan); }
+
+.watch-temp { font-size: .8rem; font-weight: 700; font-variant-numeric: tabular-nums; color: var(--w80); }
+.watch-temp--quente { color: var(--red); }
+.watch-temp--frio { color: var(--blue2); }
+
+/* ═══════════════════════════════════════════════════════════
+   PERSONALIZAR CARTÕES
+═══════════════════════════════════════════════════════════ */
+.cards-toolbar {
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+.cards-hint { color: var(--w50); font-size: .7rem; }
+.cards-hidden {
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  margin-top: 10px; padding: 8px 10px;
+  border: 1px dashed var(--w08); border-radius: var(--r-sm);
+}
+
+/* Em edição o cartão não é mais um mostrador: os controles aparecem por cima e
+   o conteúdo recua, para ficar claro que ali se mexe e não se lê. */
+.card.is-editing { cursor: default; }
+.card.is-editing .card-body { opacity: .55; }
+
+.card-edit {
+  position: absolute; inset: 6px 6px auto auto; z-index: 3;
+  display: flex; gap: 4px;
+  padding: 3px; border-radius: var(--r-sm);
+  background: var(--bg2); border: 1px solid var(--w08);
+  animation: fadeIn var(--t-fast) var(--ease-out);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   FORA DO NORMAL
+   A anomalia vem antes da comparação com a média porque é a leitura mais forte
+   das duas: ela muda o que a pessoa faz a seguir.
+═══════════════════════════════════════════════════════════ */
+.anomaly-strip {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px; margin-bottom: 10px;
+  border-radius: var(--r-md);
+  border: 1px solid rgba(255,140,0,.28);
+  background: linear-gradient(135deg, rgba(255,140,0,.1), rgba(255,140,0,.03));
+  color: var(--orange);
+  animation: fadeIn var(--t-med) var(--ease-out);
+}
+.anomaly-strip--abaixo {
+  border-color: rgba(77,171,247,.28);
+  background: linear-gradient(135deg, rgba(77,171,247,.1), rgba(77,171,247,.03));
+  color: var(--blue2);
+}
+.anomaly-text { flex: 1; color: var(--w80); font-size: .78rem; line-height: 1.45; }
+.anomaly-text strong { color: inherit; }
+.anomaly-strip .anomaly-text strong { color: var(--orange); }
+.anomaly-strip--abaixo .anomaly-text strong { color: var(--blue2); }
+.anomaly-score {
+  font-size: .72rem; font-weight: 700; font-variant-numeric: tabular-nums;
+  padding: 3px 8px; border-radius: 99px;
+  background: var(--w04); border: 1px solid currentColor;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   REGRAS DE ALERTA
+═══════════════════════════════════════════════════════════ */
+.rule-form {
+  padding: 16px; margin-bottom: 14px;
+  border: 1px solid var(--w08); border-radius: var(--r-md);
+  background: var(--bg2);
+  animation: fadeIn var(--t-med) var(--ease-out);
+}
+.rule-form-grid {
+  display: grid; gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  margin-bottom: 14px;
+}
+.rule-field { display: flex; flex-direction: column; gap: 5px; }
+
+.rule-hint { color: var(--w50); font-size: .72rem; line-height: 1.5; margin-bottom: 10px; }
+
+.rule-conditions {
+  padding: 12px; border-radius: var(--r-sm);
+  background: var(--w04); border: 1px solid var(--w08);
+}
+.rule-condition {
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+.rule-condition .input-select { flex: 0 1 auto; width: auto; min-width: 110px; }
+.input-number { width: 88px; min-width: 88px; }
+.rule-unit { color: var(--w50); font-size: .72rem; min-width: 26px; }
+.rule-and { color: var(--cyan); font-size: .72rem; font-weight: 700; }
+
+.rule-actions { display: flex; gap: 8px; margin-top: 14px; }
+.rule-actions .primary-btn { width: auto; margin-top: 0; }
+
+.rules-list { display: flex; flex-direction: column; gap: 8px; }
+
+.rule-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: calc(12px * var(--densidade)) 14px;
+  border: 1px solid var(--w08); border-radius: var(--r-md);
+  background: var(--bg2);
+  transition: border-color var(--t-fast), background var(--t-fast);
+}
+.rule-item:hover { border-color: rgba(0,229,255,.2); }
+/* Regra desligada continua na lista, apagada: ela existe, só não está valendo,
+   e apagar seria outra decisão. */
+.rule-item.is-off { opacity: .5; }
+
+.rule-badge {
+  display: flex; align-items: center; justify-content: center;
+  width: 34px; height: 34px; flex: 0 0 auto;
+  border-radius: var(--r-sm);
+  background: rgba(255,140,0,.12); border: 1px solid rgba(255,140,0,.25);
+  color: var(--orange);
+}
+.rule-badge--danger { background: rgba(255,45,85,.12); border-color: rgba(255,45,85,.25); color: var(--red); }
+
+.rule-body { flex: 1; min-width: 0; }
+.rule-name {
+  display: flex; align-items: center; gap: 7px; flex-wrap: wrap;
+  color: var(--white); font-size: .82rem; font-weight: 600;
+}
+.rule-desc { color: var(--w50); font-size: .74rem; margin-top: 3px; }
+.rule-chip {
+  display: inline-flex; align-items: center; gap: 3px;
+  padding: 2px 7px; border-radius: 99px;
+  background: var(--w04); border: 1px solid var(--w08);
+  color: var(--w50); font-size: .65rem; font-weight: 600;
+}
+.rule-controls { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; }
+
+/* ═══════════════════════════════════════════════════════════
+   PREVISÃO DA SEMANA
+═══════════════════════════════════════════════════════════ */
+.week-grid {
+  display: grid; gap: 10px;
+  grid-template-columns: repeat(7, 1fr);
+  margin-bottom: 14px;
+}
+
+.week-day {
+  display: flex; flex-direction: column; align-items: center; gap: calc(7px * var(--densidade)); 
+  padding: calc(14px * var(--densidade)) 8px;
+  border: 1px solid var(--w08); border-radius: var(--r-md);
+  background: var(--bg2);
+  text-align: center;
+  transition: border-color var(--t-fast), transform var(--t-fast);
+}
+.week-day:hover { border-color: rgba(0,229,255,.25); transform: translateY(-2px); }
+.week-day.is-today { border-color: rgba(0,229,255,.35); background: linear-gradient(160deg, rgba(0,229,255,.07), transparent); }
+
+.week-name { color: var(--white); font-size: .74rem; font-weight: 700; text-transform: capitalize; }
+.week-date { color: var(--w20); font-size: .65rem; font-variant-numeric: tabular-nums; }
+.week-icon { color: var(--cyan); }
+
+/* A barra desenha a amplitude do dia dentro da faixa da semana inteira, então
+   dá para comparar os dias de relance: barra curta e alta é dia quente e
+   estável, barra longa é dia de virada. */
+.week-bar-track {
+  position: relative;
+  width: 6px; height: 54px;
+  border-radius: 99px;
+  background: var(--w04);
+}
+.week-bar {
+  position: absolute; left: 0; right: 0;
+  border-radius: 99px;
+  background: linear-gradient(180deg, var(--orange), var(--blue2));
+}
+
+.week-temps { display: flex; align-items: baseline; gap: 6px; font-variant-numeric: tabular-nums; }
+.week-max { color: var(--orange); font-size: .92rem; font-weight: 700; }
+.week-min { color: var(--blue2); font-size: .76rem; }
+
+.week-rain {
+  display: inline-flex; align-items: center; gap: 4px;
+  color: var(--w50); font-size: .68rem; font-variant-numeric: tabular-nums;
+}
+.week-rain.is-wet { color: var(--cyan); }
+.week-mm { color: var(--w20); }
+
+.week-sky {
+  color: var(--w50); font-size: .64rem; line-height: 1.3;
+  min-height: 2.6em;
+}
+
+.chart-card--wide { grid-column: 1 / -1; }
+.chart-badge--filter { display: inline-flex; align-items: center; gap: 5px; color: var(--orange); }
+
+@media (max-width: 900px) {
+  /* Sete colunas em tela estreita dão 40px por dia, o que não cabe nem a
+     temperatura. Duas linhas de quatro resolvem sem esconder nada. */
+  .week-grid { grid-template-columns: repeat(4, 1fr); }
+}
+
+@media (max-width: 560px) {
+  .week-grid { grid-template-columns: repeat(2, 1fr); }
+  .rule-item { flex-wrap: wrap; }
+  .rule-controls { width: 100%; justify-content: flex-end; }
+}
+
+/* O vazio dentro de uma aba, em vez do vazio da tela inteira: ocupa a linha
+   toda da grade sem tentar preencher a altura toda. */
+.empty-state--inline { padding: 28px 20px; }

@@ -1,0 +1,55 @@
+services:
+  backend:
+    build:
+      context: ./backend
+    image: monitoring-system-backend:latest
+    restart: unless-stopped
+    env_file:
+      - ./backend/.env
+    # Só o que é decidido pelo formato do container fica aqui. Tudo que é
+    # configuração do serviço (chaves de API, CORS_ORIGIN, ADMIN_TOKEN, e-mail)
+    # vem do backend/.env pelo env_file acima.
+    #
+    # A distinção importa: environment tem precedência sobre env_file, e uma
+    # entrada escrita como ${VAR:-} vira string vazia quando a variável não
+    # existe no shell. Listar aqui uma chave que mora no .env a apagaria em
+    # silêncio, e o sintoma seria um recurso desligado sem explicação.
+    environment:
+      NODE_ENV: production
+      # Dentro do compose a rede já é isolada e o nginx é a única porta de
+      # entrada, então o Node precisa aceitar conexões da rede interna.
+      HOST: 0.0.0.0
+      PORT: 3001
+      DATA_DIR: /data
+      # O nginx é o único proxy à frente do Node, e é confiável, então o rate
+      # limit pode usar o IP real que ele repassa.
+      TRUST_PROXY: "true"
+    volumes:
+      # O histórico de alertas mora aqui, fora da imagem e fora do repositório.
+      - alerts-data:/data
+    # Sem portas publicadas: o backend só é alcançável pela rede interna do
+    # compose. O único caminho de fora é através do nginx.
+    expose:
+      - "3001"
+    networks:
+      - monitoring-system
+
+  frontend:
+    build:
+      context: ./frontend
+    image: monitoring-system-frontend:latest
+    restart: unless-stopped
+    ports:
+      - "${WEB_PORT:-8080}:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - monitoring-system
+
+volumes:
+  alerts-data:
+
+networks:
+  monitoring-system:
+    driver: bridge

@@ -1,16 +1,30 @@
 {
-  "name": "monitoramento-ambiental-backend",
-  "version": "1.0.0",
-  "description": "API Backend - Dashboard de Monitoramento Ambiental",
-  "main": "back.js",
+  "name": "monitoring-system-backend",
+  "version": "2.0.0",
+  "private": true,
+  "description": "API do dashboard de monitoramento ambiental: clima, qualidade do ar, sismos e alertas",
+  "license": "MIT",
+  "type": "module",
+  "main": "src/server.js",
+  "engines": {
+    "node": ">=20.11"
+  },
   "scripts": {
-    "start": "node back.js",
-    "dev": "node --watch back.js"
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "smoke": "node scripts/smoke.js",
+    "check:security": "node scripts/security-check.js",
+    "check": "npm run smoke && npm run check:security && npm run check:access",
+    "serve": "node scripts/serve.js",
+    "check:access": "node scripts/access-check.js"
   },
   "dependencies": {
+    "compression": "^1.8.1",
     "cors": "^2.8.5",
-    "express": "^4.18.2",
-    "node-fetch": "^2.7.0",
-    "nodemailer": "^9.0.1"
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.7.0",
+    "helmet": "^8.3.0",
+    "nodemailer": "^9.1.1"
   }
 }

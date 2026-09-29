@@ -1,0 +1,273 @@
+/* ═══════════════════════════════════════════════════════════
+   COLODELBOT: o robô
+   Carregado pelo próprio componente, então só entra no bundle de quem
+   realmente usa o assistente.
+═══════════════════════════════════════════════════════════ */
+.robot { position: relative; display: block; flex: none; }
+
+.robot__svg { width: 100%; height: 100%; overflow: visible; display: block; }
+
+/* O voo: sobe e desce devagar, e a sombra encolhe junto. Sem a sombra
+   acompanhando, o movimento lê como tremor em vez de flutuação. */
+.robot__svg    { animation: robotFloat 3.6s ease-in-out infinite; transform-origin: 50% 90%; }
+.robot__shadow { fill: #04101c; opacity: .38; animation: robotShadow 3.6s ease-in-out infinite; transform-origin: 120px 224px; }
+@keyframes robotFloat  { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-7px) } }
+@keyframes robotShadow { 0%,100% { opacity: .38; transform: scaleX(1) } 50% { opacity: .2; transform: scaleX(.84) } }
+
+.robot__body     { fill: var(--bg3); stroke: rgba(0,229,255,.45); stroke-width: 2.5; }
+.robot__head     { fill: var(--bg2); stroke: var(--cyan); stroke-width: 2.5; }
+.robot__face     { fill: #02131f; stroke: rgba(0,229,255,.25); stroke-width: 1.5; }
+.robot__ear      { fill: var(--bg3); stroke: rgba(0,229,255,.45); stroke-width: 2; }
+.robot__ear-ring { fill: none; stroke: var(--cyan); stroke-width: 2; opacity: .7; }
+.robot__stem     { stroke: var(--cyan); stroke-width: 3; stroke-linecap: round; }
+.robot__tip      { fill: var(--cyan); animation: robotTip 2s ease-in-out infinite; }
+@keyframes robotTip { 0%,100% { opacity: .55 } 50% { opacity: 1 } }
+
+.robot__eye      { fill: var(--cyan); animation: robotBlink 5.2s infinite; transform-origin: center; transform-box: fill-box; }
+.robot__eye-wrap { transition: transform .25s var(--ease-out); }
+@keyframes robotBlink { 0%,92%,100% { transform: scaleY(1) } 95% { transform: scaleY(.1) } }
+
+.robot__mouth { fill: none; stroke: var(--cyan); stroke-width: 3.5; stroke-linecap: round; transform-origin: center; transform-box: fill-box; }
+.robot__brow  { stroke: var(--cyan); stroke-width: 2.5; stroke-linecap: round; opacity: 0; transition: opacity .25s; }
+.robot__zzz   { fill: var(--cyan); font-family: var(--mono); font-size: 17px; font-weight: 700; opacity: 0; }
+
+.robot__glow {
+  position: absolute; inset: -18%;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--cyan-glow) 0%, transparent 68%);
+  opacity: .5; pointer-events: none;
+}
+.robot__ring {
+  position: absolute; inset: 4%;
+  border-radius: 50%;
+  border: 1px dashed rgba(0,229,255,.3);
+  opacity: 0; pointer-events: none;
+}
+
+/* Pensando: olhos estreitam, sobrancelhas aparecem, o anel gira. */
+.robot--pensando .robot__eye  { animation: none; transform: scaleY(.55); }
+.robot--pensando .robot__brow { opacity: .85; }
+.robot--pensando .robot__ring { opacity: 1; animation: robotSpin 2.4s linear infinite; }
+@keyframes robotSpin { to { transform: rotate(360deg) } }
+
+/* Respondendo: a boca se mexe no ritmo da fala. */
+.robot--falando .robot__mouth { animation: robotTalk .42s ease-in-out infinite alternate; }
+.robot--falando .robot__glow  { animation: robotPulse 1s ease-in-out infinite; }
+@keyframes robotTalk  { from { transform: scaleY(.55) } to { transform: scaleY(1.35) } }
+@keyframes robotPulse { 0%,100% { opacity: .45 } 50% { opacity: .85 } }
+
+/* Dormindo: tudo desacelera e os zês sobem. */
+.robot--dormindo .robot__svg    { animation-duration: 6s; }
+.robot--dormindo .robot__eye    { animation: none; transform: scaleY(.08); }
+.robot--dormindo .robot__glow   { opacity: .18; }
+.robot--dormindo .robot__zzz--1 { animation: robotZzz 3s ease-in-out infinite; }
+.robot--dormindo .robot__zzz--2 { animation: robotZzz 3s ease-in-out infinite .7s; }
+@keyframes robotZzz {
+  0%   { opacity: 0; transform: translate(0,0) }
+  35%  { opacity: .9 }
+  100% { opacity: 0; transform: translate(8px,-16px) }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   COLODELBOT: botão flutuante
+═══════════════════════════════════════════════════════════ */
+/* Sem pílula, sem borda, sem fundo: o robô flutua direto sobre a página. Ele
+   já se move sozinho e tem brilho próprio, que é o que chama o olho. Uma
+   moldura em volta só devolveria o retângulo que estávamos tirando da tela. */
+/* Um robô solto no canto não se lê como botão: nada ali diz que é clicável.
+   A borda devolve essa leitura. É um anel fino e circular, e não a pílula
+   retangular de antes, para o robô continuar sendo o desenho principal em vez
+   de virar conteúdo dentro de uma caixa. */
+.bot-fab {
+  position: fixed; right: 20px; bottom: 16px; z-index: 400;
+  display: flex; align-items: center; justify-content: center;
+  width: 72px; height: 72px; padding: 0;
+  border-radius: 50%;
+  border: 1px solid var(--cyan-glow);
+  background: var(--bg1);
+  box-shadow: 0 6px 20px rgba(0,0,0,.35), inset 0 0 20px var(--cyan-dim);
+  cursor: pointer;
+  transition: transform var(--t-fast) var(--ease-spring),
+              border-color var(--t-fast) var(--ease-out),
+              box-shadow var(--t-fast) var(--ease-out),
+              opacity var(--t-fast) var(--ease-out);
+}
+
+/* No hover o anel acende, que é a confirmação de que responde ao clique. */
+.bot-fab:hover {
+  transform: translateY(-4px) scale(1.06);
+  border-color: var(--cyan);
+  box-shadow: 0 10px 26px rgba(0,0,0,.45), 0 0 22px var(--cyan-glow), inset 0 0 20px var(--cyan-dim);
+}
+
+.bot-fab:focus-visible { outline: 2px solid var(--cyan); outline-offset: 4px; }
+
+/* Aberto, ele encolhe e recua para não brigar com o painel que abriu. */
+.bot-fab.is-open { transform: scale(.72); opacity: .5; }
+.bot-fab.is-open:hover { opacity: 1; transform: scale(.8); }
+
+/* ═══════════════════════════════════════════════════════════
+   COLODELBOT: painel de conversa
+═══════════════════════════════════════════════════════════ */
+.bot-panel {
+  position: fixed; right: 22px; bottom: 96px; z-index: 401;
+  width: min(400px, calc(100vw - 44px));
+  height: min(560px, calc(100vh - 140px));
+  display: flex; flex-direction: column;
+  background: linear-gradient(180deg, var(--bg2), var(--bg0));
+  border: 1px solid rgba(0,229,255,.22);
+  border-radius: 16px; overflow: hidden;
+  box-shadow: 0 24px 60px rgba(0,0,0,.6);
+  /* Fechado ele sai do caminho por completo: sem foco alcançável e sem leitura
+     por leitor de tela, não só invisível. */
+  opacity: 0; visibility: hidden;
+  transform: translateY(16px) scale(.96);
+  transform-origin: bottom right;
+  transition: opacity var(--t-med) var(--ease-out),
+              transform var(--t-med) var(--ease-spring),
+              visibility 0s linear var(--t-med);
+}
+.bot-panel.is-open {
+  opacity: 1; visibility: visible;
+  transform: translateY(0) scale(1);
+  transition-delay: 0s;
+}
+
+.bot-head {
+  display: flex; align-items: center; gap: 11px;
+  padding: 12px 12px 12px 14px;
+  border-bottom: 1px solid var(--w08);
+  background: var(--bg1); flex: none;
+}
+.bot-head__text  { flex: 1; min-width: 0; }
+.bot-head__name  { font-size: .84rem; font-weight: 700; color: var(--white); }
+.bot-head__status {
+  display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+  font-family: var(--mono); font-size: .58rem; color: var(--w50);
+  letter-spacing: .06em; text-transform: uppercase; margin-top: 2px;
+}
+.bot-head__dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); box-shadow: 0 0 7px var(--green); }
+.bot-head__status--pensando    .bot-head__dot { background: var(--orange); box-shadow: 0 0 7px var(--orange); animation: pulseDot 1s infinite; }
+.bot-head__status--respondendo .bot-head__dot { background: var(--cyan); box-shadow: 0 0 7px var(--cyan); animation: pulseDot .7s infinite; }
+.bot-head__city { color: var(--w20); text-transform: none; letter-spacing: 0; }
+
+.bot-icon-btn {
+  background: none; border: 1px solid transparent; border-radius: var(--r-sm);
+  color: var(--w20); padding: 6px; cursor: pointer; flex: none;
+  display: flex; align-items: center; justify-content: center;
+  transition: color var(--t-fast), border-color var(--t-fast), background var(--t-fast);
+}
+.bot-icon-btn:hover { color: var(--cyan); border-color: rgba(0,229,255,.3); background: var(--cyan-dim); }
+
+.bot-log {
+  flex: 1; overflow-y: auto; overflow-x: hidden;
+  padding: 14px; display: flex; flex-direction: column; gap: 12px;
+  scroll-behavior: smooth;
+}
+
+.bot-msg { display: flex; gap: 8px; align-items: flex-start; animation: botRise var(--t-med) var(--ease-out) both; }
+@keyframes botRise { from { opacity: 0; transform: translateY(8px) } to { opacity: 1; transform: translateY(0) } }
+
+.bot-msg--user { flex-direction: row-reverse; }
+/* A marca de quem falou também sai da caixinha: o ícone já distingue o turno,
+   e a bolha ao lado já tem a borda que delimita a mensagem. */
+.bot-msg__mark {
+  flex: none; margin-top: 7px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--cyan); opacity: .65;
+}
+
+.bot-msg__bubble {
+  max-width: 84%; padding: 9px 12px; border-radius: 12px;
+  font-size: .79rem; line-height: 1.6; color: var(--w80);
+  background: var(--bg3); border: 1px solid var(--w08);
+  overflow-wrap: anywhere;
+}
+.bot-msg--user .bot-msg__bubble {
+  background: var(--cyan-dim); border-color: rgba(0,229,255,.28); color: var(--white);
+}
+
+.md-p { margin: 0 0 7px; }
+.md-p:last-child { margin-bottom: 0; }
+.md-list { margin: 0 0 7px; padding-left: 17px; display: flex; flex-direction: column; gap: 3px; }
+.md-list:last-child { margin-bottom: 0; }
+.md-code { font-family: var(--mono); font-size: .92em; background: var(--w08); padding: 1px 5px; border-radius: 4px; color: var(--cyan); }
+.md-pre {
+  font-family: var(--mono); font-size: .7rem; line-height: 1.55;
+  background: #02101c; border: 1px solid var(--w08); border-radius: var(--r-sm);
+  padding: 9px 11px; margin: 7px 0; overflow-x: auto; color: var(--w80);
+}
+
+.bot-typing { display: inline-flex; gap: 4px; align-items: center; padding: 2px 0; }
+.bot-typing i { width: 5px; height: 5px; border-radius: 50%; background: var(--cyan); opacity: .4; animation: botDot 1.1s infinite; }
+.bot-typing i:nth-child(2) { animation-delay: .16s; }
+.bot-typing i:nth-child(3) { animation-delay: .32s; }
+@keyframes botDot { 0%,60%,100% { opacity: .3; transform: translateY(0) } 30% { opacity: 1; transform: translateY(-3px) } }
+
+.bot-caret {
+  display: inline-block; width: 2px; height: .85em; margin-left: 2px;
+  background: var(--cyan); vertical-align: text-bottom;
+  animation: botCaret .9s steps(2) infinite;
+}
+@keyframes botCaret { 0%,100% { opacity: 1 } 50% { opacity: 0 } }
+
+.bot-error {
+  display: flex; align-items: center; gap: 7px;
+  font-size: .72rem; color: var(--red);
+  background: rgba(255,45,85,.08); border: 1px solid rgba(255,45,85,.28);
+  border-radius: var(--r-sm); padding: 8px 10px;
+}
+
+.bot-suggestions { display: flex; flex-wrap: wrap; gap: 6px; padding: 0 14px 10px; flex: none; }
+.bot-chip {
+  background: var(--bg3); border: 1px solid var(--w08); border-radius: 20px;
+  color: var(--w50); font-family: var(--font); font-size: .68rem;
+  padding: 6px 11px; cursor: pointer; text-align: left;
+  transition: color var(--t-fast), border-color var(--t-fast), background var(--t-fast);
+}
+.bot-chip:hover { color: var(--cyan); border-color: rgba(0,229,255,.35); background: var(--cyan-dim); }
+
+.bot-composer {
+  display: flex; align-items: flex-end; gap: 8px;
+  padding: 11px 12px; border-top: 1px solid var(--w08);
+  background: var(--bg1); flex: none;
+}
+.bot-input {
+  flex: 1; resize: none; max-height: 110px;
+  background: var(--bg3); border: 1px solid rgba(0,229,255,.15);
+  border-radius: var(--r-sm); color: var(--white);
+  font-family: var(--font); font-size: .78rem; line-height: 1.5;
+  padding: 8px 10px; outline: none;
+  transition: border-color var(--t-fast), box-shadow var(--t-fast);
+}
+.bot-input:focus { border-color: var(--cyan); box-shadow: 0 0 0 3px var(--cyan-dim); }
+.bot-input::placeholder { color: var(--w20); }
+
+.bot-send {
+  flex: none; width: 34px; height: 34px; border-radius: var(--r-sm);
+  display: flex; align-items: center; justify-content: center;
+  background: var(--cyan-dim); border: 1px solid rgba(0,229,255,.35);
+  color: var(--cyan); cursor: pointer;
+  transition: background var(--t-fast), transform var(--t-fast) var(--ease-spring), opacity var(--t-fast);
+}
+.bot-send:hover:not(:disabled) { background: rgba(0,229,255,.22); transform: scale(1.06); }
+.bot-send:disabled { opacity: .35; cursor: not-allowed; }
+.bot-send--stop { background: rgba(255,45,85,.12); border-color: rgba(255,45,85,.35); color: var(--red); }
+
+@media (max-width: 560px) {
+  .bot-panel { right: 12px; left: 12px; width: auto; bottom: 88px; height: min(70vh, 520px); }
+  .bot-fab   { right: 12px; bottom: 10px; width: 58px; height: 58px; }
+}
+
+/* O robô é decoração acompanhando um estado, e o estado continua dito por
+   texto e pela cor do ponto. Com movimento reduzido ele fica parado e legível
+   em vez de sumir. */
+@media (prefers-reduced-motion: reduce) {
+  .robot__svg, .robot__shadow, .robot__tip, .robot__eye,
+  .robot__mouth, .robot__ring, .robot__glow, .robot__zzz,
+  .bot-typing i, .bot-caret, .bot-msg {
+    animation: none !important;
+  }
+  .robot--pensando .robot__ring { opacity: 1; }
+  .bot-log { scroll-behavior: auto; }
+}

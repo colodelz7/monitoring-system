@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="Monitoring System">
+  <title>Monitoring System</title>
+
+  <!-- Fundo transparente e só o traço, como o resto dos ícones do sistema. É o
+       mesmo globo da barra lateral, para a aba do navegador e o painel serem
+       reconhecidos como a mesma coisa.
+
+       Sem o ponto de alerta no canto, o desenho volta ao centro e pode crescer
+       até ocupar o quadro inteiro. O traço é mais grosso que no painel porque o
+       favicon é desenhado a 16 pixels, e nessa escala a linha fina sumiria. -->
+  <g fill="none" stroke="#00b8d4" stroke-width="2.6" stroke-linecap="round">
+    <circle cx="16" cy="16" r="12.2"/>
+    <path d="M3.8 16h24.4"/>
+    <path d="M16 3.8c3.3 3.6 5.1 7.7 5.1 12.2s-1.8 8.6-5.1 12.2c-3.3-3.6-5.1-7.7-5.1-12.2S12.7 7.4 16 3.8Z"/>
+  </g>
+</svg>

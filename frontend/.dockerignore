@@ -1,0 +1,11 @@
+node_modules
+npm-debug.log
+dist
+.env
+.env.*
+*.md
+Dockerfile
+.dockerignore
+
+# Gerado por scripts/copy-maplibre-worker.mjs durante o build da imagem
+public/maplibre
